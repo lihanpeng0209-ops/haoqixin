@@ -6,9 +6,11 @@
 <title>外国政要参访苏州 · 1971—2026</title>
 <link rel="dns-prefetch" href="//cdn.bootcdn.net">
 <link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
+<link rel="dns-prefetch" href="//tile.openstreetmap.org">
+<link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin>
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.css" />
-<script src="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
-<script src="https://cdn.bootcdn.net/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+<script defer src="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script defer src="https://cdn.bootcdn.net/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -23,7 +25,10 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hira
 #tab-row::-webkit-scrollbar{display:none}
 .tab-btn{flex-shrink:0;padding:6px 13px;border-radius:16px;border:1px solid #1c2a3a;background:transparent;color:#6b8299;font-size:11px;cursor:pointer;white-space:nowrap;transition:all 0.15s}
 .tab-btn.active{background:#4fc3f7;color:#080c12;border-color:#4fc3f7;font-weight:600}
-/* Map section */
+/* Map dark tiles */
+.leaflet-tile{filter:invert(1) hue-rotate(180deg) brightness(0.55) saturate(0.4)}
+.leaflet-tile-pane{background:#080c12}
+.leaflet-container{background:#080c12!important}
 #map-wrap{flex:1;position:relative;min-height:0;background:#080c12}
 #map{width:100%;height:100%}
 /* Floating controls */
@@ -186,6 +191,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hira
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
 // ========== DATA ==========
 const visits = [
   {y:1971,m:2,d:null,name:"诺罗敦·西哈努克",cn:"柬埔寨",title:"国家元首",role:"head",purpose:"cultural",place:"拙政园、刺绣厂",lat:31.326,lng:120.629,note:"首位到访苏州的外国元首。叶剑英陪同。夫人莫尼克同行。",news:[{label:"搜狐·西哈努克苏州情缘",url:"https://m.sohu.com/n/354962327/"},{label:"苏州档案·金鸡湖大人物",url:"https://www.sohu.com/a/1027367820_121106832"}],photo:null},
@@ -271,7 +277,7 @@ visits.sort((a,b)=>a.y-b.y||(a.m||0)-(b.m||0));
 // ========== MAP ==========
 const map = L.map('map',{zoomControl:false}).setView([31.32, 120.68], 10);
 L.control.zoom({position:'bottomright'}).addTo(map);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(map);
 
 const roleColors = {head:'#4fc3f7',royal:'#81c784',minister:'#ffb74d'};
 const markers=[], markerGroup=L.layerGroup().addTo(map);
@@ -414,6 +420,7 @@ document.getElementById('sheet-toggle').addEventListener('click',function(){
 // Init
 renderList();
 document.getElementById('loader').classList.add('hide');
+});
 </script>
 </body>
 </html>
