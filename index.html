@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>外国政要参访苏州 · 1971—2026</title>
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.css" />
+<script src="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;background:#080c12;color:#ccc;touch-action:manipulation}
+#app{display:flex;flex-direction:column;height:100%;width:100%}
+/* Top bar */
+#topbar{background:#0e141c;padding:12px 16px 10px;border-bottom:1px solid #1a2632;flex-shrink:0;z-index:10}
+#topbar h1{font-size:17px;font-weight:700;color:#fff;letter-spacing:0.5px;margin-bottom:2px}
+#topbar .sub{font-size:11px;color:#6b8299}
+/* Tab pills */
+#tab-row{display:flex;gap:4px;padding:8px 12px;background:#0e141c;border-bottom:1px solid #1a2632;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+#tab-row::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:6px 13px;border-radius:16px;border:1px solid #1c2a3a;background:transparent;color:#6b8299;font-size:11px;cursor:pointer;white-space:nowrap;transition:all 0.15s}
+.tab-btn.active{background:#4fc3f7;color:#080c12;border-color:#4fc3f7;font-weight:600}
+/* Map section */
+#map-wrap{flex:1;position:relative;min-height:0;background:#080c12}
+#map{width:100%;height:100%}
+/* Floating controls */
+.map-float{position:absolute;top:10px;right:10px;z-index:999;display:flex;flex-direction:column;gap:5px}
+.map-float button{padding:8px 12px;border-radius:8px;border:1px solid #1c2a3a;background:rgba(14,20,28,0.94);color:#8899aa;font-size:11px;cursor:pointer;backdrop-filter:blur(8px);text-align:center;white-space:nowrap}
+.map-float button.active{background:#4fc3f7;color:#080c12;border-color:#4fc3f7}
+/* Bottom sheet */
+#sheet{background:#0e141c;border-top:1px solid #1a2632;flex-shrink:0;z-index:10;transition:max-height 0.3s ease;overflow:hidden;display:flex;flex-direction:column}
+#sheet.open{max-height:52vh}
+#sheet.closed{max-height:0}
+#sheet-toggle{width:100%;padding:10px;background:#0e141c;border:none;border-top:1px solid #1a2632;color:#6b8299;font-size:12px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:1px}
+#sheet-toggle .arrow{transition:transform 0.3s;font-size:10px}
+#sheet.open #sheet-toggle .arrow{transform:rotate(180deg)}
+/* Sheet content */
+#sheet-body{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;display:none}
+#sheet.open #sheet-body{display:block}
+/* Mini trend */
+#mini-trend{display:flex;align-items:stretch;gap:10px;padding:10px 16px;border-bottom:1px solid #1a2632;min-height:100px}
+#mini-trend canvas{flex:1;max-height:90px}
+#mini-insight{display:flex;flex-direction:column;justify-content:center;min-width:80px}
+#mini-insight .big{font-size:28px;font-weight:800;color:#4fc3f7;line-height:1}
+#mini-insight .txt{font-size:10px;color:#8899aa;line-height:1.3;margin-top:2px}
+/* Stats strip */
+.stats-strip{display:flex;gap:4px;padding:8px 16px;border-bottom:1px solid #1a2632}
+.stat-badge{flex:1;background:#111b26;border-radius:6px;padding:8px 4px;text-align:center;border:1px solid #1c2a3a}
+.stat-badge .num{font-size:18px;font-weight:800;color:#4fc3f7}
+.stat-badge .label{font-size:9px;color:#6b8299;margin-top:2px}
+/* Filter chips */
+.chip-row{display:flex;gap:4px;padding:8px 16px;border-bottom:1px solid #1a2632;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.chip-row::-webkit-scrollbar{display:none}
+.chip{padding:5px 11px;border-radius:12px;border:1px solid #1c2a3a;background:transparent;color:#6b8299;font-size:10px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.chip.active{background:#4fc3f7;color:#080c12;border-color:#4fc3f7;font-weight:600}
+/* Visit cards */
+#card-list{padding:6px 12px}
+.card{padding:10px 14px;border-bottom:1px solid #111b26;cursor:pointer;transition:background 0.15s;border-radius:6px;margin-bottom:2px}
+.card:active,.card.highlight{background:#152230}
+.card .card-top{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.card .card-year{font-size:11px;color:#4fc3f7;font-weight:700;white-space:nowrap}
+.card .card-purpose{font-size:9px;padding:2px 7px;border-radius:8px;white-space:nowrap;font-weight:600}
+.card .card-purpose.cultural{background:#1a3020;color:#81c784}
+.card .card-purpose.business{background:#301a1a;color:#ef5350}
+.card .card-purpose.mixed{background:#302a1a;color:#ffb74d}
+.card .card-name{font-size:15px;color:#fff;font-weight:600}
+.card .card-detail{font-size:11px;color:#6b8299;line-height:1.4}
+.card .card-links{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+.card .card-link{font-size:10px;padding:3px 8px;border-radius:10px;background:#111b26;color:#4fc3f7;text-decoration:none;border:1px solid #1c2a3a}
+.card .card-link:active{background:#1c2a3a;color:#fff}
+/* Legend mini */
+.legend-mini{position:absolute;bottom:8px;left:8px;z-index:999;background:rgba(14,20,28,0.92);padding:8px 12px;border-radius:8px;border:1px solid #1c2a3a;font-size:10px;color:#8899aa;backdrop-filter:blur(8px);display:flex;flex-direction:column;gap:2px}
+.legend-mini .lr{display:flex;align-items:center;gap:5px}
+.legend-mini .ld{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* Narrative toast */
+.narrative-toast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(14,20,28,0.95);border:1px solid #4fc3f7;border-radius:10px;padding:14px 18px;z-index:1000;pointer-events:none;opacity:0;transition:opacity 0.4s;max-width:280px;width:85vw;box-shadow:0 6px 24px rgba(0,0,0,0.6)}
+.narrative-toast.show{opacity:1}
+.narrative-toast .nt-era{font-size:10px;color:#4fc3f7;font-weight:700;letter-spacing:2px;margin-bottom:3px}
+.narrative-toast .nt-title{font-size:16px;color:#fff;font-weight:700;margin-bottom:4px}
+.narrative-toast .nt-text{font-size:12px;color:#8899aa;line-height:1.5}
+/* Leaflet popup mobile */
+.leaflet-popup-content-wrapper{background:#0e141c;color:#ccc;border-radius:10px;border:1px solid #1c2a3a}
+.leaflet-popup-content{margin:10px 14px;font-size:12px;line-height:1.5}
+.leaflet-popup-content b{color:#4fc3f7}
+.leaflet-popup-content a{color:#ffb74d;font-size:11px;display:inline-block;margin-top:2px}
+.leaflet-popup-tip{background:#0e141c}
+/* Larger screens - side-by-side */
+@media(min-width:768px){
+#app{flex-direction:row}
+#topbar,#tab-row,#sheet-toggle,.stats-strip,.chip-row,.card-list-wrapper{display:none}
+#sheet{width:400px;min-width:400px;max-height:none!important;border-top:none;border-right:1px solid #1a2632;display:flex;flex-direction:column;flex-shrink:0}
+#sheet.closed{max-height:none!important}
+#sheet-body{display:block!important}
+#sheet .header{padding:16px;border-bottom:1px solid #1a2632}
+#sheet .header h1{font-size:18px;font-weight:700;color:#fff;letter-spacing:0.5px;margin-bottom:2px}
+#sheet .header .sub{font-size:11px;color:#6b8299}
+#mini-trend{flex-grow:0}
+#map-wrap{flex:1}
+.narrative-toast{max-width:340px}
+}
+</style>
+  <meta property="og:title" content="外国政要参访苏州·1971-2026">
+  <meta property="og:description" content="56年间81批次外国政要访苏足迹，从「逛园林」到「直奔工厂」的变迁图谱">
+  <meta property="og:image" content="">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<div id="app">
+  <!-- Mobile topbar -->
+  <div id="topbar">
+    <h1>外国政要参访苏州</h1>
+    <div class="sub">1971—2026 · 从园林客厅到产业现场</div>
+  </div>
+  <!-- Mobile tab pills -->
+  <div id="tab-row">
+    <button class="tab-btn active" data-mode="all">全部</button>
+    <button class="tab-btn" data-mode="cultural">园林</button>
+    <button class="tab-btn" data-mode="mixed">混合</button>
+    <button class="tab-btn" data-mode="business">产业</button>
+  </div>
+  <!-- Map -->
+  <div id="map-wrap">
+    <div id="map"></div>
+    <div class="map-float">
+      <button id="btn-heat" class="active">热力图</button>
+      <button id="btn-markers" class="active">标记</button>
+      <button id="btn-auto">自动播</button>
+      <button id="btn-reset">重置</button>
+    </div>
+    <div class="legend-mini">
+      <div class="lr"><span class="ld" style="background:#4fc3f7"></span>元首/首脑</div>
+      <div class="lr"><span class="ld" style="background:#81c784"></span>王室</div>
+      <div class="lr"><span class="ld" style="background:#ffb74d"></span>部长/前政要</div>
+    </div>
+    <div class="narrative-toast" id="narrative"></div>
+  </div>
+  <!-- Bottom sheet -->
+  <div id="sheet" class="open">
+    <!-- Desktop header -->
+    <div class="header">
+      <h1>外国政要参访苏州</h1>
+      <div class="sub">1971—2026 · 从园林客厅到产业现场</div>
+    </div>
+    <button id="sheet-toggle"><span class="arrow">▲</span> 数据面板</button>
+    <div id="sheet-body">
+      <div id="mini-trend">
+        <canvas id="trendChart"></canvas>
+        <div id="mini-insight"><div class="big" id="insight-pct">85%</div><div class="txt" id="insight-text">2020s产业参访占比</div></div>
+      </div>
+      <div class="stats-strip">
+        <div class="stat-badge"><div class="num" id="s-total">-</div><div class="label">参访次数</div></div>
+        <div class="stat-badge"><div class="num" id="s-countries">-</div><div class="label">国家/地区</div></div>
+        <div class="stat-badge"><div class="num" id="s-years">-</div><div class="label">跨越年份</div></div>
+      </div>
+      <div class="chip-row" id="chip-row">
+        <button class="chip active" data-decade="all">全部</button>
+        <button class="chip" data-decade="1970">1970s</button>
+        <button class="chip" data-decade="1980">1980s</button>
+        <button class="chip" data-decade="1990">1990s</button>
+        <button class="chip" data-decade="2000">2000s</button>
+        <button class="chip" data-decade="2010">2010s</button>
+        <button class="chip" data-decade="2020">2020s</button>
+      </div>
+      <div id="card-list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== DATA ==========
+const visits = [
+  {y:1971,m:2,d:null,name:"诺罗敦·西哈努克",cn:"柬埔寨",title:"国家元首",role:"head",purpose:"cultural",place:"拙政园、刺绣厂",lat:31.326,lng:120.629,note:"首位到访苏州的外国元首。叶剑英陪同。夫人莫尼克同行。",news:[{label:"搜狐·西哈努克苏州情缘",url:"https://m.sohu.com/n/354962327/"},{label:"苏州档案·金鸡湖大人物",url:"https://www.sohu.com/a/1027367820_121106832"}],photo:null},
+  {y:1971,m:5,d:11,name:"诺罗敦·西哈努克",cn:"柬埔寨",title:"国家元首",role:"head",purpose:"cultural",place:"拙政园、虎丘、西园、狮子林、留园、天平山、刺绣厂、丝绸印花厂、人民商场",lat:31.340,lng:120.586,note:"私人访问，携27人亲友团住3天。逛人民商场，称'中国商品最多、最便宜'。",news:[{label:"搜狐·西哈努克苏州情缘",url:"https://m.sohu.com/n/354962327/"}],photo:null},
+  {y:1974,m:11,d:29,name:"亨利·基辛格",cn:"美国",title:"国务卿",role:"minister",purpose:"cultural",place:"虎丘、留园、拙政园、刺绣研究所",lat:31.340,lng:120.586,note:"首次访苏。新婚夫人南希同行。松鹤楼品尝'基辛格火方'成苏州名菜。",news:[{label:"引力播·基辛格珍贵影像",url:"https://www.toutiao.com/article/7307079426993406464/"},{label:"江苏网·基辛格苏州情缘",url:"https://jsnews.jschina.com.cn/sz/a/202312/t20231201_3326587.shtml"}],photo:null},
+  {y:1977,m:4,d:null,name:"玛格丽特·撒切尔",cn:"英国",title:"保守党领袖(后任首相)",role:"minister",purpose:"mixed",place:"拙政园",lat:31.326,lng:120.629,note:"出任首相前访华。穿过'别有洞天'月洞门留下经典照片。",news:[{label:"苏州档案·金鸡湖大人物",url:"https://www.sohu.com/a/1027367820_121106832"}],photo:null},
+  {y:1981,m:9,d:1,name:"吉米·卡特",cn:"美国",title:"前总统",role:"head",purpose:"mixed",place:"虎丘、留园、网师园、拙政园、刺绣研究所、第一丝厂",lat:31.340,lng:120.586,note:"8小时密集行程。邓小平1979年赠其双面绣《小猫》，此行专程致谢。",news:[{label:"苏州日报·卡特与苏州",url:"https://news.2500sz.com/doc/2024/12/31/1126561.shtml"},{label:"名城文旅·卡特苏州故事",url:"https://m.szdushi.com.cn/news/1735696020199278.shtml"}],photo:null},
+  {y:1982,m:10,d:5,name:"亨利·基辛格",cn:"美国",title:"前国务卿",role:"minister",purpose:"cultural",place:"拙政园",lat:31.326,lng:120.629,note:"第二次访苏。发现游客是自己买票入园，感叹中国变化。",news:[{label:"引力播·基辛格珍贵影像",url:"https://www.toutiao.com/article/7307079426993406464/"}],photo:null},
+  {y:1987,m:3,d:24,name:"诺罗敦·西哈努克",cn:"柬埔寨",title:"太皇",role:"head",purpose:"mixed",place:"虎丘、网师园、绸缎炼染一厂、戏曲博物馆",lat:31.340,lng:120.586,note:"第三次访苏，停留两天。爱食采芝斋蜜饯，赠翻译亲笔法文诗集。",news:[{label:"搜狐·苏州往事图录",url:"https://m.sohu.com/n/354962327/"}],photo:null},
+  {y:1988,m:null,d:null,name:"玛哈·哇集拉隆功",cn:"泰国",title:"王储(现国王)",role:"royal",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"以王储身份到访苏州。",news:[{label:"我苏网·东盟会议选址苏州",url:"https://www.ourjiangsu.com/a/20171122/1511318911958.shtml"}],photo:null},
+  {y:1992,m:9,d:null,name:"李光耀",cn:"新加坡",title:"内阁资政",role:"head",purpose:"business",place:"虎丘",lat:31.340,lng:120.586,note:"临时增加苏州站。火车站前问'苏州有国际机场吗？'成为工业园区项目真正起点。",news:[{label:"苏州档案·金鸡湖大人物",url:"https://www.sohu.com/a/1027367820_121106832"},{label:"苏州日报·章新胜回忆",url:"https://k.sina.com.cn/article_1686546714_6486a91a02000e2h6.html"}],photo:null},
+  {y:1992,m:9,d:null,name:"王鼎昌",cn:"新加坡",title:"副总理(后任总统)",role:"head",purpose:"business",place:"虎丘",lat:31.340,lng:120.586,note:"与李光耀同访苏州考察工业园区选址。",news:[],photo:null},
+  {y:1993,m:5,d:10,name:"李光耀",cn:"新加坡",title:"内阁资政",role:"head",purpose:"business",place:"竹辉饭店、网师园",lat:31.297,lng:120.637,note:"率团考察，夜游网师园。5月11日签署《合作开发苏州工业园区的原则协议》。",news:[{label:"红网·李光耀园区故事",url:"https://yq.rednet.cn/c/2015/03/24/4120777.htm"}],photo:null},
+  {y:1993,m:5,d:10,name:"王鼎昌",cn:"新加坡",title:"副总理",role:"head",purpose:"business",place:"竹辉饭店",lat:31.297,lng:120.637,note:"共同出席苏州工业园区原则协议签约。",news:[],photo:null},
+  {y:1993,m:11,d:null,name:"黎德英",cn:"越南",title:"国家主席",role:"head",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"时任越南国家主席到访苏州。",news:[],photo:null},
+  {y:1994,m:5,d:null,name:"李显龙",cn:"新加坡",title:"副总理",role:"head",purpose:"business",place:"苏州工业园区",lat:31.324,lng:120.733,note:"园区破土动工。与中国副总理李岚清共同担任园区首任联合协调理事会联合主席。",news:[{label:"网易·李显龙苏州渊源",url:"https://www.163.com/dy/article/JI1BBVBD051482MP_pdya11y.html"}],photo:null},
+  {y:1994,m:5,d:14,name:"亨利·基辛格",cn:"美国",title:"前国务卿",role:"minister",purpose:"cultural",place:"留园(冠云峰)、网师园",lat:31.317,lng:120.593,note:"第三次访苏。在冠云峰前留影：'让美丽的苏州永远留在我的心中'。",news:[{label:"江苏网·基辛格苏州情缘",url:"https://jsnews.jschina.com.cn/sz/a/202312/t20231201_3326587.shtml"}],photo:null},
+  {y:1995,m:10,d:7,name:"李显龙",cn:"新加坡",title:"副总理",role:"head",purpose:"business",place:"苏州工业园区净水厂",lat:31.324,lng:120.733,note:"与中国副总理李岚清共同主持净水厂奠基仪式。",news:[],photo:null},
+  {y:1996,m:1,d:null,name:"丹瑞",cn:"缅甸",title:"大将(国家领导人)",role:"head",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"到访苏州。",news:[],photo:null},
+  {y:1997,m:7,d:null,name:"端古·贾阿法",cn:"马来西亚",title:"最高元首",role:"royal",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"马来西亚最高元首到访。",news:[],photo:null},
+  {y:1998,m:10,d:null,name:"潘文凯",cn:"越南",title:"总理",role:"head",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"时任越南总理来访。",news:[],photo:null},
+  {y:1999,m:4,d:null,name:"诗琳通",cn:"泰国",title:"公主",role:"royal",purpose:"cultural",place:"得月楼、虎丘、刺绣研究所",lat:31.340,lng:120.586,note:"首次苏州之行。品尝苏帮菜，多次著书向泰国人民介绍中国。后续又两次到访。",news:[],photo:null},
+  {y:2001,m:9,d:5,name:"吉米·卡特",cn:"美国",title:"前总统",role:"head",purpose:"mixed",place:"昆山周庄全旺村",lat:31.118,lng:120.843,note:"第二次访苏。观摩村民选举全过程。《卡特观摩村民选举》获第十二届中国新闻奖三等奖。",news:[{label:"苏州日报·卡特与苏州",url:"https://news.2500sz.com/doc/2024/12/31/1126561.shtml"}],photo:null},
+  {y:2002,m:4,d:15,name:"亨利·基辛格",cn:"美国",title:"前国务卿",role:"minister",purpose:"mixed",place:"苏州工业园区、周庄",lat:31.324,lng:120.733,note:"第四次访苏。惊叹'看到了辉煌的历史，还看到了辉煌的未来'。",news:[{label:"江苏网·基辛格苏州情缘",url:"https://jsnews.jschina.com.cn/sz/a/202312/t20231201_3326587.shtml"}],photo:null},
+  {y:2007,m:6,d:null,name:"朱马里·赛雅颂",cn:"老挝",title:"党中央总书记/国家主席",role:"head",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"到访苏州。",news:[],photo:null},
+  {y:2009,m:5,d:null,name:"李光耀",cn:"新加坡",title:"内阁资政",role:"head",purpose:"business",place:"苏州工业园区",lat:31.324,lng:120.733,note:"出席园区15周年庆典。评价'青出于蓝，学生比老师更好'。最后一次到访苏州。",news:[],photo:null},
+  {y:2010,m:null,d:null,name:"波松·布帕万",cn:"老挝",title:"总理",role:"head",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"以总理身份到访苏州。",news:[],photo:null},
+  {y:2010,m:null,d:null,name:"李显龙",cn:"新加坡",title:"总理",role:"head",purpose:"mixed",place:"苏州",lat:31.300,lng:120.634,note:"以总理身份访问苏州。",news:[],photo:null},
+  {y:2010,m:12,d:null,name:"洪森",cn:"柬埔寨",title:"首相",role:"head",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"到访苏州。",news:[],photo:null},
+  {y:2013,m:9,d:null,name:"巴哈鲁丁·哈比比",cn:"印尼",title:"前总统",role:"head",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"印尼前总统一行访问苏州。",news:[],photo:null},
+  {y:2014,m:4,d:27,name:"玛格丽特二世",cn:"丹麦",title:"女王",role:"royal",purpose:"mixed",place:"拙政园",lat:31.326,lng:120.629,note:"携亨里克亲王。仅停留3小时。应习近平主席邀请对华国事访问。",news:[{label:"苏州外办·丹麦女王访苏",url:"https://wsb.suzhou.gov.cn/wb/rdxw/201404/c34b36295d234443a9d5a3ff97833a7d.shtml"},{label:"人民网·女王游拙政园组图",url:"https://world-app.people.cn/n/2014/0428/c1002-24947950-8.html"}],photo:null},
+  {y:2014,m:4,d:27,name:"亨里克亲王",cn:"丹麦",title:"亲王",role:"royal",purpose:"mixed",place:"拙政园",lat:31.326,lng:120.629,note:"随丹麦女王玛格丽特二世同行。",news:[],photo:null},
+  {y:2014,m:5,d:19,name:"阿尔马兹别克·阿坦巴耶夫",cn:"吉尔吉斯斯坦",title:"总统",role:"head",purpose:"mixed",place:"拙政园、刺绣研究所、金鸡湖",lat:31.326,lng:120.629,note:"携夫人及6部长、5议员共62人。不顾腿疾亲自上台发表长篇致辞。",news:[{label:"苏州外办·吉尔吉斯总统访苏",url:"https://wsb.suzhou.gov.cn/wb/rdxw/201405/3ede662d0a984823b697e21b0568a61c.shtml"}],photo:null},
+  {y:2014,m:8,d:17,name:"阿卜杜拉·亚明",cn:"马尔代夫",title:"总统",role:"head",purpose:"mixed",place:"苏州工业园区",lat:31.324,lng:120.733,note:"应习近平邀请出席南京青奥会并顺访。希望借鉴苏州工业园区经验。",news:[{label:"苏州外办·马尔代夫总统访苏",url:"https://wsb.suzhou.gov.cn/wb/rdxw/201408/58967e1f7c3a47848e25ee2d96cf8bcc.shtml"}],photo:null},
+  {y:2017,m:10,d:14,name:"波松·布帕万",cn:"老挝",title:"前总理",role:"minister",purpose:"mixed",place:"苏州大学",lat:31.306,lng:120.655,note:"为苏大'一带一路'发展研究院（老挝研究中心）揭牌，受聘名誉主任。",news:[{label:"苏州外办·老挝前总理访苏",url:"https://wsb.suzhou.gov.cn/wb/rdxw/201710/a493e0b32133482a9fff3d1cce1504f4.shtml"}],photo:null},
+  {y:2018,m:10,d:19,name:"哈拉尔五世",cn:"挪威",title:"国王",role:"royal",purpose:"mixed",place:"常熟UWC、拙政园",lat:31.654,lng:120.751,note:"携宋雅王后。参观常熟世界联合学院，在昆承湖边种植友谊红豆树。",news:[{label:"苏州外办·挪威国王访苏",url:"https://wsb.suzhou.gov.cn/wb/zyhd/201810/97eda15fa95a433996dd61a257387bd2.shtml"}],photo:null},
+  {y:2018,m:10,d:19,name:"宋雅",cn:"挪威",title:"王后",role:"royal",purpose:"mixed",place:"常熟UWC、拙政园",lat:31.654,lng:120.751,note:"随挪威国王同行，在昆承湖边亲手种植友谊红豆树。",news:[],photo:null},
+  {y:2020,m:12,d:6,name:"杜尚·贝拉",cn:"斯洛伐克",title:"驻华大使",role:"minister",purpose:"cultural",place:"苏州博物馆、拙政园",lat:31.325,lng:120.631,note:"中国-中东欧国家合作系列活动期间顺访。首次到访，赞叹世界文化遗产拙政园。",news:[{label:"苏州外办·斯洛伐克大使访苏",url:"https://wsb.suzhou.gov.cn/wb/rdxw/202012/caf411dd5bce40a5a09c781febb311ea.shtml"}],photo:null},
+  {y:2023,m:12,d:12,name:"埃里克·阿洛泽",cn:"法国",title:"国民议会法中友好小组主席",role:"minister",purpose:"mixed",place:"苏州博物馆、拙政园",lat:31.325,lng:120.631,note:"率法国议会代表团。参加第三届中法碳中和论坛、赛诺菲研究院活动。",news:[{label:"苏州市政府·法国议会代表团访苏",url:"https://www.suzhou.gov.cn/szsrmzf/bmdt/202312/44c6db47ec9147ca86af8b679f9b3e1a.shtml"}],photo:null},
+  {y:2024,m:9,d:11,name:"佩德罗·桑切斯",cn:"西班牙",title:"首相",role:"head",purpose:"business",place:"昆山(蒙德拉贡工业园)",lat:31.385,lng:120.981,note:"直奔昆山工厂车间！走进法格锻压机床、海斯坦普汽车组件生产车间。",news:[{label:"苏州日报·桑切斯访苏",url:"https://www.suzhou.gov.cn/szsrmzf/szyw/202409/5c96a91cac5d4054af0f81bb284b5479.shtml"},{label:"今日头条·桑切斯到访苏州",url:"https://www.toutiao.com/article/7413455643006272000/"}],photo:null},
+  {y:2024,m:11,d:23,name:"李显龙",cn:"新加坡",title:"国务资政",role:"head",purpose:"business",place:"中新生命科学园、右岸客厅、广电总台、中新绿色数码港",lat:31.324,lng:120.733,note:"出席园区开发建设30周年活动。卸任总理后首次访华，与何立峰共同参观成果展、种植友谊树。",news:[{label:"央视·李显龙访华",url:"https://content-static.cctvnews.cctv.com/snow-book/index.html?item_id=8269614627764167585"},{label:"上观·李显龙苏州第一站",url:"https://www.163.com/dy/article/JHTOD1R9055040N3.html"}],photo:null},
+  {y:2026,m:2,d:25,name:"弗里德里希·默茨",cn:"德国",title:"总理",role:"head",purpose:"business",place:"太仓(德资企业)",lat:31.459,lng:121.130,note:"率高规格经贸代表团访华，近30家德企高管随行。太仓集聚近800家德企。",news:[{label:"苏州日报·范波会见德企代表",url:"https://www.suzhou.gov.cn/szsrmzf/szyw/202602/43b5166fbcf94a018e9413e11120489c.shtml"},{label:"江苏宣传·中德经贸下一程",url:"https://www.jsxc.gov.cn/jsfb/dwxc/202602/t20260228_90741.shtml"}],photo:null},
+  {y:2026,m:4,d:19,name:"马里奥·库纳塞克",cn:"奥地利",title:"施蒂利亚州州长",role:"minister",purpose:"business",place:"太仓",lat:31.459,lng:121.130,note:"太仓高新区与施蒂利亚州国际化中心签署经贸合作协议。",news:[{label:"苏州市政府·太仓奥地利交流会",url:"https://www.suzhou.gov.cn/szsrmzf/szyw/202604/5a4e534b87904bf9931580261244dbc9.shtml"}],photo:null},
+  {y:2026,m:5,d:21,name:"赤泽亮正",cn:"日本",title:"经济产业大臣",role:"minister",purpose:"business",place:"金鸡湖(APEC会场)",lat:31.318,lng:120.722,note:"出席APEC第三十二届贸易部长会议。G7成员国中第6个派出高官访华。",news:[{label:"今日头条·赤泽亮正访华",url:"https://www.toutiao.com/article/7642907682747253275"}],photo:null},
+  {y:2026,m:6,d:23,name:"贝娅特·迈因尔-赖辛格",cn:"奥地利",title:"外交部长",role:"minister",purpose:"business",place:"太仓(史太林格公司)",lat:31.459,lng:121.130,note:"紧凑行程中专程留2小时到访太仓。参观专精特新'小巨人'企业。",news:[{label:"江苏一带一路·奥地利外长访太仓",url:"https://ydyl.jiangsu.gov.cn/art/2026/6/26/art_76290_11795083.html"}],photo:null},
+  {y:2026,m:4,d:9,name:"许宝琨",cn:"新加坡",title:"人力部兼保健卫生部高级政务部长",role:"minister",purpose:"business",place:"苏州工业园区",lat:31.324,lng:120.733,note:"与陈国明共同率新加坡通商中国高级领袖研修班考察。范波、王维会见。",news:[{label:"苏州日报·通商中国研修班访苏",url:"https://www.suzhou.gov.cn/szsrmzf/szyw/202604/32a42d22506640aa9a11db39fdbd691c.shtml"}],photo:null},
+  {y:2026,m:4,d:9,name:"陈国明",cn:"新加坡",title:"总理公署高级政务部长",role:"minister",purpose:"business",place:"苏州工业园区",lat:31.324,lng:120.733,note:"与许宝琨共同率新加坡通商中国高级领袖研修班考察。",news:[],photo:null},
+  {y:2026,m:5,d:21,name:"吕翰九",cn:"韩国",title:"产业通商部通商交涉本部长",role:"minister",purpose:"business",place:"金鸡湖(APEC)",lat:31.318,lng:120.722,note:"出席APEC贸易部长会议。近千家韩资企业在苏落地发展。",news:[{label:"苏州日报·范波会见吕翰九",url:"https://www.suzhou.gov.cn/szsrmzf/szyw/202605/8e180b353fa14e7381a277449f715a1f.shtml"}],photo:null},
+  {y:2026,m:5,d:22,name:"素帕姬",cn:"泰国",title:"副总理兼商业部长",role:"head",purpose:"business",place:"金鸡湖(APEC会场)",lat:31.318,lng:120.722,note:"出席APEC贸易部长会议。在苏绣作品《木棉迎春》前驻足良久。",news:[{label:"苏州日报·搭起互信合作之桥",url:"https://www.sipac.gov.cn/szgyyq/mtjj/202605/9477e17d1456477d8fb55e9b8facca40.shtml"}],photo:null},
+  {y:2026,m:5,d:22,name:"罗罗·埃斯蒂",cn:"印尼",title:"贸易部副部长",role:"minister",purpose:"business",place:"金鸡湖(APEC会场)",lat:31.318,lng:120.722,note:"出席APEC会议。夜游金鸡湖时随评弹《茉莉花》旋律摇摆。",news:[{label:"苏州日报·搭起互信合作之桥",url:"https://www.sipac.gov.cn/szgyyq/mtjj/202605/9477e17d1456477d8fb55e9b8facca40.shtml"}],photo:null},
+  {y:2026,m:5,d:22,name:"保拉·埃斯特韦斯",cn:"智利",title:"外交部国际经济关系副部长",role:"minister",purpose:"business",place:"金鸡湖(APEC会场)",lat:31.318,lng:120.722,note:"首次到访苏州。循碧螺春茶香参加茶歇，赞叹'历史、文化与创新融合'。",news:[{label:"苏州日报·搭起互信合作之桥",url:"https://www.sipac.gov.cn/szgyyq/mtjj/202605/9477e17d1456477d8fb55e9b8facca40.shtml"}],photo:null},
+  {y:2026,m:5,d:23,name:"爱德华多·佩德罗萨",cn:"APEC",title:"秘书处执行主任",role:"minister",purpose:"mixed",place:"金鸡湖、拙政园",lat:31.318,lng:120.722,note:"APEC闭幕当天到访。游拙政园称'最棒的就是园林'，'可以共同成就一番事业'。",news:[{label:"苏州日报·APEC闭幕",url:"https://news.2500sz.com/doc/2026/05/25/1211716.shtml"}],photo:null},
+  {y:2023,m:2,d:17,name:"埃赫桑·汉杜齐",cn:"伊朗",title:"财经部部长",role:"minister",purpose:"business",place:"园区展示中心、纳米城",lat:31.324,lng:120.733,note:"推动中伊纳米技术合作。参观纳米城及伊朗纳米苏州中心。",news:[],photo:null},
+  {y:2023,m:4,d:2,name:"颜金勇",cn:"新加坡",title:"贸工部部长",role:"minister",purpose:"business",place:"新宇航空、腾飞新苏坊、生物医药产业园",lat:31.324,lng:120.733,note:"考察苏州航空制造与生物医药产业。曹路宝书记会见。",news:[],photo:null},
+  {y:2023,m:5,d:14,name:"许宝琨",cn:"新加坡",title:"人力部兼永续发展与环境部高级政务部长",role:"minister",purpose:"business",place:"园区展示中心",lat:31.324,lng:120.733,note:"首次以高级政务部长身份访苏。曹路宝书记会见。",news:[],photo:null},
+  {y:2023,m:5,d:27,name:"人盟主席团成员",cn:"孟加拉",title:"议会外事委员会主席",role:"minister",purpose:"business",place:"中交天和、长三角国际研发社区",lat:31.410,lng:120.640,note:"参观中交天和盾构机制造基地及相城研发社区。",news:[],photo:null},
+  {y:2023,m:9,d:7,name:"米里亚娜·斯波利亚里茨·埃格",cn:"瑞士",title:"红十字国际委员会主席",role:"minister",purpose:"mixed",place:"苏州大学、红十字国际学院",lat:31.306,lng:120.655,note:"访问全球首家红十字国际学院。曹路宝书记会见。",news:[],photo:null},
+  {y:2023,m:9,d:23,name:"瓦尔季斯·东布罗夫斯基斯",cn:"欧盟",title:"委员会执行副主席",role:"minister",purpose:"mixed",place:"拙政园、苏州博物馆、沧浪亭",lat:31.326,lng:120.629,note:"访华期间专程到访苏州三大古典园林与文化地标。",news:[],photo:null},
+  {y:2023,m:10,d:18,name:"卡尔·德卡卢维",cn:"比利时",title:"西弗兰德省省长",role:"minister",purpose:"cultural",place:"拙政园、周庄",lat:31.326,lng:120.629,note:"友城西弗兰德省与苏州长期保持友好交流。吴庆文市长会见。",news:[],photo:null},
+  {y:2023,m:10,d:21,name:"格拉迪斯·贝赫拉诺",cn:"古巴",title:"总审计长",role:"minister",purpose:"cultural",place:"拙政园、苏州博物馆",lat:31.326,lng:120.629,note:"刘小涛书记会见。领略苏州古典园林与博物馆文化。",news:[],photo:null},
+  {y:2023,m:11,d:7,name:"葆拉·戈皮-斯库恩",cn:"特立尼达和多巴哥",title:"贸工部部长",role:"minister",purpose:"business",place:"特多凤凰工业园推介会",lat:31.324,lng:120.733,note:"出席特立尼达和多巴哥凤凰工业园苏州推介会。",news:[],photo:null},
+  {y:2024,m:1,d:24,name:"辛拉冯",cn:"老挝",title:"建国阵线中央委员会主席",role:"head",purpose:"mixed",place:"拙政园、协鑫集团",lat:31.326,lng:120.629,note:"既访千年园林，又看新能源企业协鑫集团。双面苏州典型行程。",news:[],photo:null},
+  {y:2024,m:6,d:26,name:"迪娜·博鲁阿尔特",cn:"秘鲁",title:"总统",role:"head",purpose:"mixed",place:"拙政园、园区展示中心、金龙客车",lat:31.326,lng:120.629,note:"国家元首级国宾。市委书记会见。参观金龙客车新能源产线。",news:[],photo:null},
+  {y:2024,m:7,d:24,name:"马丁·施尔德万",cn:"德国",title:"左翼党联合主席",role:"minister",purpose:"mixed",place:"固德威、留园、太仓中德合作展示中心",lat:31.322,lng:120.550,note:"横跨高新区固德威、留园、太仓德企三地，产业与文化全覆盖。",news:[],photo:null},
+  {y:2024,m:12,d:13,name:"迈克尔·皮奇尼诺",cn:"马耳他",title:"国民党青年干部考察团团长",role:"minister",purpose:"mixed",place:"园区展示中心、苏大、山塘街、众安桥村",lat:31.324,lng:120.733,note:"从产业展示到高校交流，从古城山塘到吴江乡村，全景式参访。",news:[],photo:null},
+  {y:2025,m:1,d:13,name:"阿德丽娅娜·梅萨罗维奇",cn:"塞尔维亚",title:"经济部长",role:"minister",purpose:"mixed",place:"园区展示中心、网师园",lat:31.324,lng:120.733,note:"市主要领导接待。塞尔维亚与中国关系持续升温背景下的经贸访问。",news:[],photo:null},
+  {y:2025,m:3,d:28,name:"雅迪拉·戈麦斯",cn:"洪都拉斯",title:"旅游部部长",role:"minister",purpose:"mixed",place:"平江路、拙政园、同程旅游",lat:31.315,lng:120.635,note:"旅游主题参访。从古城平江路到现代在线旅游企业同程。",news:[],photo:null},
+  {y:2025,m:5,d:21,name:"朝格特巴特尔",cn:"蒙古",title:"国家大呼拉尔法律常设委主席",role:"minister",purpose:"cultural",place:"拙政园、山塘街、平江路",lat:31.326,lng:120.629,note:"东北亚三国团一行。以古城文化地标为主线的经典园林参访。",news:[],photo:null},
+  {y:2025,m:9,d:9,name:"刘强燕",cn:"马来西亚",title:"国会下议院副议长",role:"minister",purpose:"business",place:"园区展示中心",lat:31.324,lng:120.733,note:"马来西亚国会代表团考察苏州工业园区发展经验。",news:[],photo:null},
+  {y:2025,m:10,d:20,name:"博扬·库梅尔",cn:"斯洛文尼亚",title:"环境气候与能源部部长",role:"minister",purpose:"business",place:"能源变革论坛·协鑫等能源企业",lat:31.320,lng:120.715,note:"出席2025能源变革论坛。参访协鑫等苏州新能源龙头企业。",news:[],photo:null},
+  {y:2025,m:10,d:20,name:"斯蒂格·乌菲·佩德森",cn:"丹麦",title:"能源署代理署长",role:"minister",purpose:"business",place:"能源变革论坛·协鑫等能源企业",lat:31.320,lng:120.715,note:"出席能源变革论坛。丹麦在绿色能源领域全球领先。",news:[],photo:null},
+  {y:2025,m:10,d:20,name:"Ko Ko Lwin",cn:"缅甸",title:"能源部部长",role:"minister",purpose:"business",place:"能源变革论坛·协鑫等能源企业",lat:31.320,lng:120.715,note:"出席能源变革论坛。",news:[],photo:null},
+  {y:2025,m:10,d:20,name:"弗朗西斯科·拉·卡梅拉",cn:"IRENA",title:"国际可再生能源署总干事",role:"minister",purpose:"business",place:"能源变革论坛·协鑫等能源企业",lat:31.320,lng:120.715,note:"出席能源变革论坛。IRENA是全球可再生能源领域最重要国际组织之一。",news:[],photo:null},
+  {y:2025,m:10,d:20,name:"塔莱别克·伊布拉耶夫",cn:"吉尔吉斯斯坦",title:"能源部部长",role:"minister",purpose:"business",place:"能源变革论坛·协鑫等能源企业",lat:31.320,lng:120.715,note:"出席能源变革论坛。",news:[],photo:null},
+  {y:2025,m:10,d:20,name:"彼得·内米亚·伊索艾莫",cn:"巴布亚新几内亚",title:"能源部部长",role:"minister",purpose:"business",place:"能源变革论坛·协鑫等能源企业",lat:31.320,lng:120.715,note:"出席能源变革论坛。",news:[],photo:null},
+  {y:2025,m:10,d:20,name:"杰里米·马克·波克林顿",cn:"英国",title:"能源安全与净零排放部常务次官",role:"minister",purpose:"business",place:"能源变革论坛·协鑫等能源企业",lat:31.320,lng:120.715,note:"出席能源变革论坛。英国能源高官深度考察苏州新能源产业链。",news:[],photo:null},
+  {y:2025,m:10,d:20,name:"年吞",cn:"缅甸",title:"电力部联邦部长",role:"minister",purpose:"business",place:"能源变革论坛·协鑫等能源企业",lat:31.320,lng:120.715,note:"出席能源变革论坛。",news:[],photo:null},
+  {y:2025,m:11,d:3,name:"赛尔米拉·萨克拉门托",cn:"圣多美和普林西比",title:"国民议会议长",role:"minister",purpose:"mixed",place:"园区展示中心、金庭镇",lat:31.324,lng:120.733,note:"非洲葡语国家议会代表团。从产业高地到太湖生态岛金庭镇。",news:[],photo:null},
+  {y:2025,m:12,d:18,name:"巴希勒",cn:"阿曼",title:"文体青部次大臣",role:"minister",purpose:"mixed",place:"园区展示中心、亨通、山塘街",lat:31.324,lng:120.733,note:"阿曼青年精英访华团。参观亨通集团及古城山塘街。",news:[],photo:null},
+];
+visits.sort((a,b)=>a.y-b.y||(a.m||0)-(b.m||0));
+
+// ========== MAP ==========
+const map = L.map('map',{zoomControl:false}).setView([31.32, 120.68], 10);
+L.control.zoom({position:'bottomright'}).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(map);
+
+const roleColors = {head:'#4fc3f7',royal:'#81c784',minister:'#ffb74d'};
+const markers=[], markerGroup=L.layerGroup().addTo(map);
+
+visits.forEach((v,i)=>{
+  const m = L.circleMarker([v.lat,v.lng],{radius:8,fillColor:roleColors[v.role],color:'#fff',weight:1.5,fillOpacity:0.9});
+  const ds = v.d?`${v.y}/${v.m}/${v.d}`:(v.m?`${v.y}/${v.m}`:`${v.y}`);
+  const purposeLabel = {cultural:'园林文化',mixed:'混合参访',business:'产业经贸'}[v.purpose];
+  let html = `<b>${v.name}</b> <span style="font-size:10px;padding:1px 6px;border-radius:6px;background:${purposeLabel==='产业经贸'?'#ef5350':purposeLabel==='园林文化'?'#81c784':'#ffb74d'};color:#000">${purposeLabel}</span><br>${v.cn} · ${v.title}<br>${ds}<br>📍 ${v.place}`;
+  if(v.note) html += `<br><small style="color:#8899aa">${v.note}</small>`;
+  if(v.news&&v.news.length) html += `<br>${v.news.map(n=>`<a href="${n.url}" target="_blank" style="font-size:10px;color:#ffb74d">📰 ${n.label}</a>`).join(' ')}`;
+  m.bindPopup(html,{maxWidth:260});
+  m._idx=i; m.on('click',()=>highlightVisit(i));
+  markerGroup.addLayer(m); markers.push(m);
+});
+
+// Heatmap
+const heatData = visits.map(v=>[v.lat,v.lng,1]);
+const heatLayer = L.heatLayer(heatData,{radius:25,blur:16,maxZoom:12,max:3,gradient:{0.2:'#4fc3f7',0.5:'#81c784',0.8:'#ffb74d',1:'#ef5350'}}).addTo(map);
+let showHeat=true,showMarkers=true;
+function updateHeatmap(f){map.removeLayer(window._currentHeat||heatLayer);const d=f.map(v=>[v.lat,v.lng,1]);window._currentHeat=L.heatLayer(d,{radius:25,blur:16,maxZoom:12,max:3,gradient:{0.2:'#4fc3f7',0.5:'#81c784',0.8:'#ffb74d',1:'#ef5350'}});if(showHeat)window._currentHeat.addTo(map)}
+document.getElementById('btn-heat').addEventListener('click',function(){showHeat=!showHeat;if(showHeat){window._currentHeat.addTo(map);this.classList.add('active');this.textContent='热力图'}else{map.removeLayer(window._currentHeat);this.classList.remove('active');this.textContent='热力图'}});
+document.getElementById('btn-markers').addEventListener('click',function(){showMarkers=!showMarkers;if(showMarkers){markerGroup.addTo(map);this.classList.add('active');this.textContent='标记'}else{map.removeLayer(markerGroup);this.classList.remove('active');this.textContent='标记'}});
+document.getElementById('btn-reset').addEventListener('click',function(){map.setView([31.32,120.68],10);currentFilter='all';currentMode='all';document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelector('.tab-btn[data-mode="all"]').classList.add('active');document.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));document.querySelector('.chip[data-decade="all"]').classList.add('active');renderList();window._currentHeat.remove();heatLayer.addTo(map);window._currentHeat=heatLayer;markerGroup.addTo(map);showHeat=true;showMarkers=true;document.getElementById('btn-heat').classList.add('active');document.getElementById('btn-markers').classList.add('active')});
+
+// Auto play
+let autoTimer=null;
+const narrativeEl = document.getElementById('narrative');
+const narrativeData = [
+  {y:1971,era:"1970s",title:"园林外交时代",text:"外国政要到访苏州，第一站总是园林。西哈努克亲王三访苏州，流连拙政园、虎丘；基辛格品尝'火方'；撒切尔穿过月洞门——所有目光聚焦千年古城的风雅。"},
+  {y:1992,era:"1990s",title:"转折：李光耀的5小时",text:"1992年，李光耀在火车站前一句'苏州有国际机场吗？'催生了改变城市格局的苏州工业园区。从网师园谈判到竹辉饭店签约，苏州开始从园林走向产业舞台。"},
+  {y:2014,era:"2010s",title:"平行双面：园林与工厂",text:"丹麦女王在拙政园品碧螺春，马尔代夫总统考察工业园区——同一年，园林外交与产业外交并行不悖，苏州展示'双面绣'城市魅力。"},
+  {y:2024,era:"2020s",title:"直奔工厂时代",text:"西班牙首相直奔昆山车间，德国总理赴太仓看德企——参访目的地从园林转向产业链。APEC会议在金鸡湖畔召开，苏州已成全球产业版图的关键节点。"},
+];
+let narrativeIdx=0;
+function autoPlay(){
+  if(!autoTimer) return;
+  narrativeIdx = (narrativeIdx+1) % narrativeData.length;
+  const n = narrativeData[narrativeIdx];
+  const eraVisits = visits.filter(v=>Math.abs(v.y-n.y)<=2);
+  if(eraVisits.length){
+    highlightVisit(visits.indexOf(eraVisits[0]));
+    narrativeEl.innerHTML = `<div class="nt-era">${n.era}</div><div class="nt-title">${n.title}</div><div class="nt-text">${n.text}</div>`;
+    narrativeEl.classList.add('show');
+    setTimeout(()=>narrativeEl.classList.remove('show'), 5000);
+  }
+}
+document.getElementById('btn-auto').addEventListener('click',function(){
+  if(autoTimer){clearInterval(autoTimer);autoTimer=null;this.classList.remove('active');this.textContent='自动播';narrativeEl.classList.remove('show');return;}
+  autoTimer=setInterval(autoPlay,6500);
+  this.classList.add('active');this.textContent='停止';
+  autoPlay();
+});
+
+// ========== TREND CHART ==========
+function buildTrendChart(filtered){
+  const decades = {1970:{cultural:0,mixed:0,business:0},1980:{cultural:0,mixed:0,business:0},1990:{cultural:0,mixed:0,business:0},2000:{cultural:0,mixed:0,business:0},2010:{cultural:0,mixed:0,business:0},2020:{cultural:0,mixed:0,business:0}};
+  filtered.forEach(v=>{const d=Math.floor(v.y/10)*10;if(decades[d]) decades[d][v.purpose]++});
+  const labels=['1970s','1980s','1990s','2000s','2010s','2020s'];
+  const cultural=labels.map(l=>decades[parseInt(l)]['cultural']);
+  const mixed=labels.map(l=>decades[parseInt(l)]['mixed']);
+  const business=labels.map(l=>decades[parseInt(l)]['business']);
+  const maxVal=Math.max(...labels.map(l=>{
+    const d=decades[parseInt(l)];return d.cultural+d.mixed+d.business;
+  }),1);
+  const container=document.getElementById('trendChart');
+  container.innerHTML=labels.map((l,i)=>`
+    <div class="css-bar-group">
+      <div class="css-bar-wrap">
+        <div class="css-bar css-bar-cultural" style="height:${(cultural[i]/maxVal*100).toFixed(1)}%"></div>
+        <div class="css-bar css-bar-mixed" style="height:${(mixed[i]/maxVal*100).toFixed(1)}%"></div>
+        <div class="css-bar css-bar-business" style="height:${(business[i]/maxVal*100).toFixed(1)}%"></div>
+      </div>
+      <span class="css-bar-label">${l}</span>
+    </div>
+  `).join('');
+  const lastDecade=decades[2020],total=lastDecade.cultural+lastDecade.mixed+lastDecade.business;
+  const bizPct=total>0?Math.round(lastDecade.business/total*100):0;
+  document.getElementById('insight-pct').textContent=bizPct+'%';
+  document.getElementById('insight-text').textContent='2020s产业参访占比';
+}
+buildTrendChart(visits);
+
+// ========== CARD LIST ==========
+const cardList = document.getElementById('card-list');
+let currentFilter='all',currentMode='all';
+
+function renderList(){
+  let filtered = visits;
+  if(currentFilter!=='all'){const dec=parseInt(currentFilter);filtered=filtered.filter(v=>v.y>=dec&&v.y<dec+10)}
+  if(currentMode!=='all') filtered=filtered.filter(v=>v.purpose===currentMode);
+  cardList.innerHTML='';
+  filtered.forEach(v=>{
+    const origIdx=visits.indexOf(v);
+    const ds=v.d?`${v.y}/${v.m}/${v.d}`:(v.m?`${v.y}/${v.m}`:`${v.y}`);
+    const purposeLabel={cultural:'园林文化',mixed:'混合参访',business:'产业经贸'}[v.purpose];
+    const div=document.createElement('div');
+    div.className='card';
+    let newsHTML='';
+    if(v.news&&v.news.length){newsHTML='<div class="card-links">'+v.news.map(n=>`<a class="card-link" href="${n.url}" target="_blank">📰 ${n.label}</a>`).join('')+'</div>';}
+    div.innerHTML=`<div class="card-top"><span class="card-year">${ds}</span><span class="card-purpose ${v.purpose}">${purposeLabel}</span></div><div class="card-name">${v.name}</div><div class="card-detail">${v.cn} · ${v.title}</div><div class="card-detail">📍 ${v.place}</div>${v.note?`<div class="card-detail" style="margin-top:2px;font-style:italic;font-size:10px">${v.note.length>50?v.note.slice(0,50)+'...':v.note}</div>`:''}${newsHTML}`;
+    div.addEventListener('click',()=>{highlightVisit(origIdx);if(window.innerWidth<768)document.getElementById('sheet').classList.remove('open')});
+    div._origIdx=origIdx;cardList.appendChild(div);
+  });
+  document.getElementById('s-total').textContent=filtered.length;
+  document.getElementById('s-countries').textContent=new Set(filtered.map(v=>v.cn)).size;
+  document.getElementById('s-years').textContent=new Set(filtered.map(v=>v.y)).size;
+  buildTrendChart(filtered);updateHeatmap(filtered);
+}
+
+function highlightVisit(idx){
+  const v=visits[idx];
+  cardList.querySelectorAll('.card').forEach(el=>el.classList.remove('highlight'));
+  const target=Array.from(cardList.querySelectorAll('.card')).find(el=>el._origIdx===idx);
+  if(target){target.classList.add('highlight');target.scrollIntoView({behavior:'smooth',block:'center'});}
+  map.setView([v.lat,v.lng],14,{animate:true});markers[idx].openPopup();
+}
+
+// Decade chips
+document.getElementById('chip-row').addEventListener('click',function(e){
+  if(e.target.classList.contains('chip')){
+    document.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));
+    e.target.classList.add('active');currentFilter=e.target.dataset.decade;renderList();
+  }
+});
+
+// Mode tabs
+document.getElementById('tab-row').addEventListener('click',function(e){
+  if(e.target.classList.contains('tab-btn')){
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    e.target.classList.add('active');currentMode=e.target.dataset.mode;renderList();
+  }
+});
+
+// Sheet toggle
+document.getElementById('sheet-toggle').addEventListener('click',function(){
+  document.getElementById('sheet').classList.toggle('open');
+});
+
+// Init
+renderList();
+</script>
+</body>
+</html>function buildTrendChart(){
+  const eras=['1970s','1980s','1990s','2000s','2010s','2020s'];
+  const vals=eras.map(e=>{
+    const [s,e2]=[parseInt(e),parseInt(e)+9];
+    const subset=visits.filter(v=>v.y>=s&&v.y<=e2);
+    return {
+      era:e,
+      total:subset.length,
+      cultural:subset.filter(v=>v.purpose==='cultural').length,
+      mixed:subset.filter(v=>v.purpose==='mixed').length,
+      business:subset.filter(v=>v.purpose==='business').length
+    };
+  });
+  const maxVal=Math.max(...vals.map(v=>v.total),1);
+  const container=document.getElementById('trendChart');
+  container.innerHTML=vals.map(v=>`
+    <div class="css-bar-group">
+      <div class="css-bar-wrap">
+        <div class="css-bar css-bar-cultural" style="height:${(v.cultural/maxVal*100).toFixed(1)}%"></div>
+        <div class="css-bar css-bar-mixed" style="height:${(v.mixed/maxVal*100).toFixed(1)}%"></div>
+        <div class="css-bar css-bar-business" style="height:${(v.business/maxVal*100).toFixed(1)}%"></div>
+      </div>
+      <span class="css-bar-label">${v.era}</span>
+    </div>
+  `).join('');
+  const total=vals.reduce((a,b)=>a+b.total,0);
+  document.getElementById('trendYear').textContent=total;
+}
