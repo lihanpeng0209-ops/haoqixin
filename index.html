@@ -217,35 +217,35 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hira
 document.addEventListener('DOMContentLoaded', function() {
 // ========== DATA ==========
 const visits = [
-  {y:1971,m:2,d:null,name:"诺罗敦·西哈努克",cn:"柬埔寨",title:"国家元首",role:"head",purpose:"cultural",place:"拙政园、刺绣厂",lat:31.326,lng:120.629,note:"首位到访苏州的外国元首。叶剑英陪同。夫人莫尼克同行。",news:[{label:"搜狐·西哈努克苏州情缘",url:"https://m.sohu.com/n/354962327/"},{label:"苏州档案·金鸡湖大人物",url:"https://www.sohu.com/a/1027367820_121106832"}],photo:null},
-  {y:1971,m:5,d:11,name:"诺罗敦·西哈努克",cn:"柬埔寨",title:"国家元首",role:"head",purpose:"cultural",place:"拙政园、虎丘、西园、狮子林、留园、天平山、刺绣厂、丝绸印花厂、人民商场",lat:31.340,lng:120.586,note:"私人访问，携27人亲友团住3天。逛人民商场，称'中国商品最多、最便宜'。",news:[{label:"搜狐·西哈努克苏州情缘",url:"https://m.sohu.com/n/354962327/"}],photo:null},
-  {y:1974,m:11,d:29,name:"亨利·基辛格",cn:"美国",title:"国务卿",role:"minister",purpose:"cultural",place:"虎丘、留园、拙政园、刺绣研究所",lat:31.340,lng:120.586,note:"首次访苏。新婚夫人南希同行。松鹤楼品尝'基辛格火方'成苏州名菜。",news:[{label:"引力播·基辛格珍贵影像",url:"https://www.toutiao.com/article/7307079426993406464/"},{label:"江苏网·基辛格苏州情缘",url:"https://jsnews.jschina.com.cn/sz/a/202312/t20231201_3326587.shtml"}],photo:null},
-  {y:1977,m:4,d:null,name:"玛格丽特·撒切尔",cn:"英国",title:"保守党领袖(后任首相)",role:"minister",purpose:"mixed",place:"拙政园",lat:31.326,lng:120.629,note:"出任首相前访华。穿过'别有洞天'月洞门留下经典照片。",news:[{label:"苏州档案·金鸡湖大人物",url:"https://www.sohu.com/a/1027367820_121106832"}],photo:null},
-  {y:1981,m:9,d:1,name:"吉米·卡特",cn:"美国",title:"前总统",role:"head",purpose:"mixed",place:"虎丘、留园、网师园、拙政园、刺绣研究所、第一丝厂",lat:31.340,lng:120.586,note:"8小时密集行程。邓小平1979年赠其双面绣《小猫》，此行专程致谢。",news:[{label:"苏州日报·卡特与苏州",url:"https://news.2500sz.com/doc/2024/12/31/1126561.shtml"},{label:"名城文旅·卡特苏州故事",url:"https://m.szdushi.com.cn/news/1735696020199278.shtml"}],photo:null},
-  {y:1982,m:10,d:5,name:"亨利·基辛格",cn:"美国",title:"前国务卿",role:"minister",purpose:"cultural",place:"拙政园",lat:31.326,lng:120.629,note:"第二次访苏。发现游客是自己买票入园，感叹中国变化。",news:[{label:"引力播·基辛格珍贵影像",url:"https://www.toutiao.com/article/7307079426993406464/"}],photo:null},
-  {y:1987,m:3,d:24,name:"诺罗敦·西哈努克",cn:"柬埔寨",title:"太皇",role:"head",purpose:"mixed",place:"虎丘、网师园、绸缎炼染一厂、戏曲博物馆",lat:31.340,lng:120.586,note:"第三次访苏，停留两天。爱食采芝斋蜜饯，赠翻译亲笔法文诗集。",news:[{label:"搜狐·苏州往事图录",url:"https://m.sohu.com/n/354962327/"}],photo:null},
-  {y:1988,m:null,d:null,name:"玛哈·哇集拉隆功",cn:"泰国",title:"王储(现国王)",role:"royal",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"以王储身份到访苏州。",news:[{label:"我苏网·东盟会议选址苏州",url:"https://www.ourjiangsu.com/a/20171122/1511318911958.shtml"}],photo:null},
-  {y:1992,m:9,d:null,name:"李光耀",cn:"新加坡",title:"内阁资政",role:"head",purpose:"business",place:"虎丘",lat:31.340,lng:120.586,note:"临时增加苏州站。火车站前问'苏州有国际机场吗？'成为工业园区项目真正起点。",news:[{label:"苏州档案·金鸡湖大人物",url:"https://www.sohu.com/a/1027367820_121106832"},{label:"苏州日报·章新胜回忆",url:"https://k.sina.com.cn/article_1686546714_6486a91a02000e2h6.html"}],photo:null},
+  {y:1971,m:2,d:null,name:"诺罗敦·西哈努克",cn:"柬埔寨",title:"国家元首",role:"head",purpose:"cultural",place:"拙政园、刺绣厂",lat:31.326,lng:120.629,note:"首位到访苏州的外国元首。叶剑英陪同。夫人莫尼克同行。",news:[{label:"搜狐·西哈努克苏州情缘"},{label:"苏州档案·金鸡湖大人物"}],photo:null},
+  {y:1971,m:5,d:11,name:"诺罗敦·西哈努克",cn:"柬埔寨",title:"国家元首",role:"head",purpose:"cultural",place:"拙政园、虎丘、西园、狮子林、留园、天平山、刺绣厂、丝绸印花厂、人民商场",lat:31.340,lng:120.586,note:"私人访问，携27人亲友团住3天。逛人民商场，称'中国商品最多、最便宜'。",news:[{label:"搜狐·西哈努克苏州情缘"}],photo:null},
+  {y:1974,m:11,d:29,name:"亨利·基辛格",cn:"美国",title:"国务卿",role:"minister",purpose:"cultural",place:"虎丘、留园、拙政园、刺绣研究所",lat:31.340,lng:120.586,note:"首次访苏。新婚夫人南希同行。松鹤楼品尝'基辛格火方'成苏州名菜。",news:[{label:"引力播·基辛格珍贵影像"},{label:"江苏网·基辛格苏州情缘"}],photo:null},
+  {y:1977,m:4,d:null,name:"玛格丽特·撒切尔",cn:"英国",title:"保守党领袖(后任首相)",role:"minister",purpose:"mixed",place:"拙政园",lat:31.326,lng:120.629,note:"出任首相前访华。穿过'别有洞天'月洞门留下经典照片。",news:[{label:"苏州档案·金鸡湖大人物"}],photo:null},
+  {y:1981,m:9,d:1,name:"吉米·卡特",cn:"美国",title:"前总统",role:"head",purpose:"mixed",place:"虎丘、留园、网师园、拙政园、刺绣研究所、第一丝厂",lat:31.340,lng:120.586,note:"8小时密集行程。邓小平1979年赠其双面绣《小猫》，此行专程致谢。",news:[{label:"苏州日报·卡特与苏州",url:"https://news.2500sz.com/doc/2024/12/31/1126561.shtml"},{label:"名城文旅·卡特苏州故事"}],photo:null},
+  {y:1982,m:10,d:5,name:"亨利·基辛格",cn:"美国",title:"前国务卿",role:"minister",purpose:"cultural",place:"拙政园",lat:31.326,lng:120.629,note:"第二次访苏。发现游客是自己买票入园，感叹中国变化。",news:[{label:"引力播·基辛格珍贵影像"}],photo:null},
+  {y:1987,m:3,d:24,name:"诺罗敦·西哈努克",cn:"柬埔寨",title:"太皇",role:"head",purpose:"mixed",place:"虎丘、网师园、绸缎炼染一厂、戏曲博物馆",lat:31.340,lng:120.586,note:"第三次访苏，停留两天。爱食采芝斋蜜饯，赠翻译亲笔法文诗集。",news:[{label:"搜狐·苏州往事图录"}],photo:null},
+  {y:1988,m:null,d:null,name:"玛哈·哇集拉隆功",cn:"泰国",title:"王储(现国王)",role:"royal",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"以王储身份到访苏州。",news:[{label:"我苏网·东盟会议选址苏州"}],photo:null},
+  {y:1992,m:9,d:null,name:"李光耀",cn:"新加坡",title:"内阁资政",role:"head",purpose:"business",place:"虎丘",lat:31.340,lng:120.586,note:"临时增加苏州站。火车站前问'苏州有国际机场吗？'成为工业园区项目真正起点。",news:[{label:"苏州档案·金鸡湖大人物"},{label:"苏州日报·章新胜回忆"}],photo:null},
   {y:1992,m:9,d:null,name:"王鼎昌",cn:"新加坡",title:"副总理(后任总统)",role:"head",purpose:"business",place:"虎丘",lat:31.340,lng:120.586,note:"与李光耀同访苏州考察工业园区选址。",news:[],photo:null},
-  {y:1993,m:5,d:10,name:"李光耀",cn:"新加坡",title:"内阁资政",role:"head",purpose:"business",place:"竹辉饭店、网师园",lat:31.297,lng:120.637,note:"率团考察，夜游网师园。5月11日签署《合作开发苏州工业园区的原则协议》。",news:[{label:"红网·李光耀园区故事",url:"https://yq.rednet.cn/c/2015/03/24/4120777.htm"}],photo:null},
+  {y:1993,m:5,d:10,name:"李光耀",cn:"新加坡",title:"内阁资政",role:"head",purpose:"business",place:"竹辉饭店、网师园",lat:31.297,lng:120.637,note:"率团考察，夜游网师园。5月11日签署《合作开发苏州工业园区的原则协议》。",news:[{label:"红网·李光耀园区故事"}],photo:null},
   {y:1993,m:5,d:10,name:"王鼎昌",cn:"新加坡",title:"副总理",role:"head",purpose:"business",place:"竹辉饭店",lat:31.297,lng:120.637,note:"共同出席苏州工业园区原则协议签约。",news:[],photo:null},
 
-  {y:1994,m:5,d:null,name:"李显龙",cn:"新加坡",title:"副总理",role:"head",purpose:"business",place:"苏州工业园区",lat:31.324,lng:120.733,note:"园区破土动工。与中国副总理李岚清共同担任园区首任联合协调理事会联合主席。",news:[{label:"网易·李显龙苏州渊源",url:"https://www.163.com/dy/article/JI1BBVBD051482MP_pdya11y.html"}],photo:null},
-  {y:1994,m:5,d:14,name:"亨利·基辛格",cn:"美国",title:"前国务卿",role:"minister",purpose:"cultural",place:"留园(冠云峰)、网师园",lat:31.317,lng:120.593,note:"第三次访苏。在冠云峰前留影：'让美丽的苏州永远留在我的心中'。",news:[{label:"江苏网·基辛格苏州情缘",url:"https://jsnews.jschina.com.cn/sz/a/202312/t20231201_3326587.shtml"}],photo:null},
+  {y:1994,m:5,d:null,name:"李显龙",cn:"新加坡",title:"副总理",role:"head",purpose:"business",place:"苏州工业园区",lat:31.324,lng:120.733,note:"园区破土动工。与中国副总理李岚清共同担任园区首任联合协调理事会联合主席。",news:[{label:"网易·李显龙苏州渊源"}],photo:null},
+  {y:1994,m:5,d:14,name:"亨利·基辛格",cn:"美国",title:"前国务卿",role:"minister",purpose:"cultural",place:"留园(冠云峰)、网师园",lat:31.317,lng:120.593,note:"第三次访苏。在冠云峰前留影：'让美丽的苏州永远留在我的心中'。",news:[{label:"江苏网·基辛格苏州情缘"}],photo:null},
   {y:1995,m:10,d:7,name:"李显龙",cn:"新加坡",title:"副总理",role:"head",purpose:"business",place:"苏州工业园区净水厂",lat:31.324,lng:120.733,note:"与中国副总理李岚清共同主持净水厂奠基仪式。",news:[],photo:null},
   {y:1996,m:1,d:null,name:"丹瑞",cn:"缅甸",title:"大将(国家领导人)",role:"head",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"到访苏州。",news:[],photo:null},
   {y:1997,m:7,d:null,name:"端古·贾阿法",cn:"马来西亚",title:"最高元首",role:"royal",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"马来西亚最高元首到访。",news:[],photo:null},
   {y:1998,m:10,d:null,name:"潘文凯",cn:"越南",title:"总理",role:"head",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"时任越南总理来访。",news:[],photo:null},
   {y:1999,m:4,d:null,name:"诗琳通",cn:"泰国",title:"公主",role:"royal",purpose:"cultural",place:"得月楼、虎丘、刺绣研究所",lat:31.340,lng:120.586,note:"首次苏州之行。品尝苏帮菜，多次著书向泰国人民介绍中国。后续又两次到访。",news:[],photo:null},
   {y:2001,m:9,d:5,name:"吉米·卡特",cn:"美国",title:"前总统",role:"head",purpose:"mixed",place:"昆山周庄全旺村",lat:31.118,lng:120.843,note:"第二次访苏。观摩村民选举全过程。《卡特观摩村民选举》获第十二届中国新闻奖三等奖。",news:[{label:"苏州日报·卡特与苏州",url:"https://news.2500sz.com/doc/2024/12/31/1126561.shtml"}],photo:null},
-  {y:2002,m:4,d:15,name:"亨利·基辛格",cn:"美国",title:"前国务卿",role:"minister",purpose:"mixed",place:"苏州工业园区、周庄",lat:31.324,lng:120.733,note:"第四次访苏。惊叹'看到了辉煌的历史，还看到了辉煌的未来'。",news:[{label:"江苏网·基辛格苏州情缘",url:"https://jsnews.jschina.com.cn/sz/a/202312/t20231201_3326587.shtml"}],photo:null},
+  {y:2002,m:4,d:15,name:"亨利·基辛格",cn:"美国",title:"前国务卿",role:"minister",purpose:"mixed",place:"苏州工业园区、周庄",lat:31.324,lng:120.733,note:"第四次访苏。惊叹'看到了辉煌的历史，还看到了辉煌的未来'。",news:[{label:"江苏网·基辛格苏州情缘"}],photo:null},
   {y:2007,m:6,d:null,name:"朱马里·赛雅颂",cn:"老挝",title:"党中央总书记/国家主席",role:"head",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"到访苏州。",news:[],photo:null},
   {y:2009,m:5,d:null,name:"李光耀",cn:"新加坡",title:"内阁资政",role:"head",purpose:"business",place:"苏州工业园区",lat:31.324,lng:120.733,note:"出席园区15周年庆典。评价'青出于蓝，学生比老师更好'。最后一次到访苏州。",news:[],photo:null},
   {y:2010,m:null,d:null,name:"波松·布帕万",cn:"老挝",title:"总理",role:"head",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"以总理身份到访苏州。",news:[],photo:null},
   {y:2010,m:null,d:null,name:"李显龙",cn:"新加坡",title:"总理",role:"head",purpose:"mixed",place:"苏州",lat:31.300,lng:120.634,note:"以总理身份访问苏州。",news:[],photo:null},
   {y:2010,m:12,d:null,name:"洪森",cn:"柬埔寨",title:"首相",role:"head",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"到访苏州。",news:[],photo:null},
   {y:2013,m:9,d:null,name:"巴哈鲁丁·哈比比",cn:"印尼",title:"前总统",role:"head",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"印尼前总统一行访问苏州。",news:[],photo:null},
-  {y:2014,m:4,d:27,name:"玛格丽特二世",cn:"丹麦",title:"女王",role:"royal",purpose:"mixed",place:"拙政园",lat:31.326,lng:120.629,note:"携亨里克亲王。仅停留3小时。应习近平主席邀请对华国事访问。",news:[{label:"苏州外办·丹麦女王访苏",url:"https://wsb.suzhou.gov.cn/wb/rdxw/201404/c34b36295d234443a9d5a3ff97833a7d.shtml"},{label:"人民网·女王游拙政园组图",url:"https://world-app.people.cn/n/2014/0428/c1002-24947950-8.html"}],photo:null},
+  {y:2014,m:4,d:27,name:"玛格丽特二世",cn:"丹麦",title:"女王",role:"royal",purpose:"mixed",place:"拙政园",lat:31.326,lng:120.629,note:"携亨里克亲王。仅停留3小时。应习近平主席邀请对华国事访问。",news:[{label:"苏州外办·丹麦女王访苏",url:"https://wsb.suzhou.gov.cn/wb/rdxw/201404/c34b36295d234443a9d5a3ff97833a7d.shtml"},{label:"人民网·女王游拙政园组图"}],photo:null},
   {y:2014,m:4,d:27,name:"亨里克亲王",cn:"丹麦",title:"亲王",role:"royal",purpose:"mixed",place:"拙政园",lat:31.326,lng:120.629,note:"随丹麦女王玛格丽特二世同行。",news:[],photo:null},
   {y:2014,m:5,d:19,name:"阿尔马兹别克·阿坦巴耶夫",cn:"吉尔吉斯斯坦",title:"总统",role:"head",purpose:"mixed",place:"拙政园、刺绣研究所、金鸡湖",lat:31.326,lng:120.629,note:"携夫人及6部长、5议员共62人。不顾腿疾亲自上台发表长篇致辞。",news:[{label:"苏州外办·吉尔吉斯总统访苏",url:"https://wsb.suzhou.gov.cn/wb/rdxw/201405/3ede662d0a984823b697e21b0568a61c.shtml"}],photo:null},
   {y:2014,m:8,d:17,name:"阿卜杜拉·亚明",cn:"马尔代夫",title:"总统",role:"head",purpose:"mixed",place:"苏州工业园区",lat:31.324,lng:120.733,note:"应习近平邀请出席南京青奥会并顺访。希望借鉴苏州工业园区经验。",news:[{label:"苏州外办·马尔代夫总统访苏",url:"https://wsb.suzhou.gov.cn/wb/rdxw/201408/58967e1f7c3a47848e25ee2d96cf8bcc.shtml"}],photo:null},
@@ -254,18 +254,18 @@ const visits = [
   {y:2018,m:10,d:19,name:"宋雅",cn:"挪威",title:"王后",role:"royal",purpose:"mixed",place:"常熟UWC、拙政园",lat:31.654,lng:120.751,note:"随挪威国王同行，在昆承湖边亲手种植友谊红豆树。",news:[],photo:null},
   {y:2020,m:12,d:6,name:"杜尚·贝拉",cn:"斯洛伐克",title:"驻华大使",role:"minister",purpose:"cultural",place:"苏州博物馆、拙政园",lat:31.325,lng:120.631,note:"中国-中东欧国家合作系列活动期间顺访。首次到访，赞叹世界文化遗产拙政园。",news:[{label:"苏州外办·斯洛伐克大使访苏",url:"https://wsb.suzhou.gov.cn/wb/rdxw/202012/caf411dd5bce40a5a09c781febb311ea.shtml"}],photo:null},
   {y:2023,m:12,d:12,name:"埃里克·阿洛泽",cn:"法国",title:"国民议会法中友好小组主席",role:"minister",purpose:"mixed",place:"苏州博物馆、拙政园",lat:31.325,lng:120.631,note:"率法国议会代表团。参加第三届中法碳中和论坛、赛诺菲研究院活动。",news:[{label:"苏州市政府·法国议会代表团访苏",url:"https://www.suzhou.gov.cn/szsrmzf/bmdt/202312/44c6db47ec9147ca86af8b679f9b3e1a.shtml"}],photo:null},
-  {y:2024,m:9,d:11,name:"佩德罗·桑切斯",cn:"西班牙",title:"首相",role:"head",purpose:"business",place:"昆山(蒙德拉贡工业园)",lat:31.385,lng:120.981,note:"直奔昆山工厂车间！走进法格锻压机床、海斯坦普汽车组件生产车间。",news:[{label:"苏州日报·桑切斯访苏",url:"https://www.suzhou.gov.cn/szsrmzf/szyw/202409/5c96a91cac5d4054af0f81bb284b5479.shtml"},{label:"今日头条·桑切斯到访苏州",url:"https://www.toutiao.com/article/7413455643006272000/"}],photo:null},
-  {y:2024,m:11,d:23,name:"李显龙",cn:"新加坡",title:"国务资政",role:"head",purpose:"business",place:"中新生命科学园、右岸客厅、广电总台、中新绿色数码港",lat:31.324,lng:120.733,note:"出席园区开发建设30周年活动。卸任总理后首次访华，与何立峰共同参观成果展、种植友谊树。",news:[{label:"央视·李显龙访华",url:"https://content-static.cctvnews.cctv.com/snow-book/index.html?item_id=8269614627764167585"},{label:"上观·李显龙苏州第一站",url:"https://www.163.com/dy/article/JHTOD1R9055040N3.html"}],photo:null},
+  {y:2024,m:9,d:11,name:"佩德罗·桑切斯",cn:"西班牙",title:"首相",role:"head",purpose:"business",place:"昆山(蒙德拉贡工业园)",lat:31.385,lng:120.981,note:"直奔昆山工厂车间！走进法格锻压机床、海斯坦普汽车组件生产车间。",news:[{label:"苏州日报·桑切斯访苏",url:"https://www.suzhou.gov.cn/szsrmzf/szyw/202409/5c96a91cac5d4054af0f81bb284b5479.shtml"},{label:"今日头条·桑切斯到访苏州"}],photo:null},
+  {y:2024,m:11,d:23,name:"李显龙",cn:"新加坡",title:"国务资政",role:"head",purpose:"business",place:"中新生命科学园、右岸客厅、广电总台、中新绿色数码港",lat:31.324,lng:120.733,note:"出席园区开发建设30周年活动。卸任总理后首次访华，与何立峰共同参观成果展、种植友谊树。",news:[{label:"央视·李显龙访华"},{label:"上观·李显龙苏州第一站"}],photo:null},
 
   {y:2026,m:4,d:19,name:"马里奥·库纳塞克",cn:"奥地利",title:"施蒂利亚州州长",role:"minister",purpose:"business",place:"太仓",lat:31.459,lng:121.130,note:"太仓高新区与施蒂利亚州国际化中心签署经贸合作协议。",news:[{label:"苏州市政府·太仓奥地利交流会",url:"https://www.suzhou.gov.cn/szsrmzf/szyw/202604/5a4e534b87904bf9931580261244dbc9.shtml"}],photo:null},
-  {y:2026,m:5,d:21,name:"赤泽亮正",cn:"日本",title:"经济产业大臣",role:"minister",purpose:"business",place:"金鸡湖(APEC会场)",lat:31.318,lng:120.722,note:"出席APEC第三十二届贸易部长会议。G7成员国中第6个派出高官访华。",news:[{label:"今日头条·赤泽亮正访华",url:"https://www.toutiao.com/article/7642907682747253275"}],photo:null},
-  {y:2026,m:6,d:23,name:"贝娅特·迈因尔-赖辛格",cn:"奥地利",title:"外交部长",role:"minister",purpose:"business",place:"太仓(史太林格公司)",lat:31.459,lng:121.130,note:"紧凑行程中专程留2小时到访太仓。参观专精特新'小巨人'企业。",news:[{label:"江苏一带一路·奥地利外长访太仓",url:"https://ydyl.jiangsu.gov.cn/art/2026/6/26/art_76290_11795083.html"}],photo:null},
+  {y:2026,m:5,d:21,name:"赤泽亮正",cn:"日本",title:"经济产业大臣",role:"minister",purpose:"business",place:"金鸡湖(APEC会场)",lat:31.318,lng:120.722,note:"出席APEC第三十二届贸易部长会议。G7成员国中第6个派出高官访华。",news:[{label:"今日头条·赤泽亮正访华"}],photo:null},
+  {y:2026,m:6,d:23,name:"贝娅特·迈因尔-赖辛格",cn:"奥地利",title:"外交部长",role:"minister",purpose:"business",place:"太仓(史太林格公司)",lat:31.459,lng:121.130,note:"紧凑行程中专程留2小时到访太仓。参观专精特新'小巨人'企业。",news:[{label:"江苏一带一路·奥地利外长访太仓"}],photo:null},
   {y:2026,m:4,d:9,name:"许宝琨",cn:"新加坡",title:"人力部兼保健卫生部高级政务部长",role:"minister",purpose:"business",place:"苏州工业园区",lat:31.324,lng:120.733,note:"与陈国明共同率新加坡通商中国高级领袖研修班考察。范波、王维会见。",news:[{label:"苏州日报·通商中国研修班访苏",url:"https://www.suzhou.gov.cn/szsrmzf/szyw/202604/32a42d22506640aa9a11db39fdbd691c.shtml"}],photo:null},
   {y:2026,m:4,d:9,name:"陈国明",cn:"新加坡",title:"总理公署高级政务部长",role:"minister",purpose:"business",place:"苏州工业园区",lat:31.324,lng:120.733,note:"与许宝琨共同率新加坡通商中国高级领袖研修班考察。",news:[],photo:null},
   {y:2026,m:5,d:21,name:"吕翰九",cn:"韩国",title:"产业通商部通商交涉本部长",role:"minister",purpose:"business",place:"金鸡湖(APEC)",lat:31.318,lng:120.722,note:"出席APEC贸易部长会议。近千家韩资企业在苏落地发展。",news:[{label:"苏州日报·范波会见吕翰九",url:"https://www.suzhou.gov.cn/szsrmzf/szyw/202605/8e180b353fa14e7381a277449f715a1f.shtml"}],photo:null},
-  {y:2026,m:5,d:22,name:"素帕姬",cn:"泰国",title:"副总理兼商业部长",role:"head",purpose:"business",place:"金鸡湖(APEC会场)",lat:31.318,lng:120.722,note:"出席APEC贸易部长会议。在苏绣作品《木棉迎春》前驻足良久。",news:[{label:"苏州日报·搭起互信合作之桥",url:"https://www.sipac.gov.cn/szgyyq/mtjj/202605/9477e17d1456477d8fb55e9b8facca40.shtml"}],photo:null},
-  {y:2026,m:5,d:22,name:"罗罗·埃斯蒂",cn:"印尼",title:"贸易部副部长",role:"minister",purpose:"business",place:"金鸡湖(APEC会场)",lat:31.318,lng:120.722,note:"出席APEC会议。夜游金鸡湖时随评弹《茉莉花》旋律摇摆。",news:[{label:"苏州日报·搭起互信合作之桥",url:"https://www.sipac.gov.cn/szgyyq/mtjj/202605/9477e17d1456477d8fb55e9b8facca40.shtml"}],photo:null},
-  {y:2026,m:5,d:22,name:"保拉·埃斯特韦斯",cn:"智利",title:"外交部国际经济关系副部长",role:"minister",purpose:"business",place:"金鸡湖(APEC会场)",lat:31.318,lng:120.722,note:"首次到访苏州。循碧螺春茶香参加茶歇，赞叹'历史、文化与创新融合'。",news:[{label:"苏州日报·搭起互信合作之桥",url:"https://www.sipac.gov.cn/szgyyq/mtjj/202605/9477e17d1456477d8fb55e9b8facca40.shtml"}],photo:null},
+  {y:2026,m:5,d:22,name:"素帕姬",cn:"泰国",title:"副总理兼商业部长",role:"head",purpose:"business",place:"金鸡湖(APEC会场)",lat:31.318,lng:120.722,note:"出席APEC贸易部长会议。在苏绣作品《木棉迎春》前驻足良久。",news:[{label:"苏州日报·搭起互信合作之桥"}],photo:null},
+  {y:2026,m:5,d:22,name:"罗罗·埃斯蒂",cn:"印尼",title:"贸易部副部长",role:"minister",purpose:"business",place:"金鸡湖(APEC会场)",lat:31.318,lng:120.722,note:"出席APEC会议。夜游金鸡湖时随评弹《茉莉花》旋律摇摆。",news:[{label:"苏州日报·搭起互信合作之桥"}],photo:null},
+  {y:2026,m:5,d:22,name:"保拉·埃斯特韦斯",cn:"智利",title:"外交部国际经济关系副部长",role:"minister",purpose:"business",place:"金鸡湖(APEC会场)",lat:31.318,lng:120.722,note:"首次到访苏州。循碧螺春茶香参加茶歇，赞叹'历史、文化与创新融合'。",news:[{label:"苏州日报·搭起互信合作之桥"}],photo:null},
   {y:2026,m:5,d:23,name:"爱德华多·佩德罗萨",cn:"APEC",title:"秘书处执行主任",role:"minister",purpose:"mixed",place:"金鸡湖、拙政园",lat:31.318,lng:120.722,note:"APEC闭幕当天到访。游拙政园称'最棒的就是园林'，'可以共同成就一番事业'。",news:[{label:"苏州日报·APEC闭幕",url:"https://news.2500sz.com/doc/2026/05/25/1211716.shtml"}],photo:null},
   {y:2023,m:2,d:17,name:"埃赫桑·汉杜齐",cn:"伊朗",title:"财经部部长",role:"minister",purpose:"business",place:"园区展示中心、纳米城",lat:31.324,lng:120.733,note:"推动中伊纳米技术合作。参观纳米城及伊朗纳米苏州中心。",news:[],photo:null},
   {y:2023,m:4,d:2,name:"颜金勇",cn:"新加坡",title:"贸工部部长",role:"minister",purpose:"business",place:"新宇航空、腾飞新苏坊、生物医药产业园",lat:31.324,lng:120.733,note:"考察苏州航空制造与生物医药产业。曹路宝书记会见。",news:[],photo:null},
@@ -312,7 +312,7 @@ visits.forEach((v,i)=>{
   const purposeLabel = {cultural:'园林文化',mixed:'混合参访',business:'产业经贸'}[v.purpose];
   let html = `<b>${v.name}</b> <span style="font-size:10px;padding:1px 6px;border-radius:6px;background:${purposeLabel==='产业经贸'?'#ef5350':purposeLabel==='园林文化'?'#81c784':'#ffb74d'};color:#000">${purposeLabel}</span><br>${v.cn} · ${v.title}<br>${ds}<br>📍 ${v.place}`;
   if(v.note) html += `<br><small style="color:#8899aa">${v.note}</small>`;
-  if(v.news&&v.news.length) html += `<br>${v.news.map(n=>`<a href="${n.url}" target="_blank" style="font-size:10px;color:#ffb74d">📰 ${n.label}</a>`).join(' ')}`;
+  if(v.news&&v.news.length) html += `<br>${v.news.map(n=>n.url?`<a href="${n.url}" target="_blank" style="font-size:10px;color:#ffb74d">📰 ${n.label}</a>`:`<span style="font-size:10px;color:#6b8299">📰 ${n.label}</span>`).join(' ')}`;
   m.bindPopup(html,{maxWidth:260});
   m._idx=i; m.on('click',()=>highlightVisit(i));
   markerGroup.addLayer(m); markers.push(m);
@@ -440,7 +440,7 @@ function renderList(){
     const div=document.createElement('div');
     div.className='card';
     let newsHTML='';
-    if(v.news&&v.news.length){newsHTML='<div class="card-links">'+v.news.map(n=>`<a class="card-link" href="${n.url}" target="_blank">📰 ${n.label}</a>`).join('')+'</div>';}
+    if(v.news&&v.news.length){newsHTML='<div class="card-links">'+v.news.map(n=>n.url?`<a class="card-link" href="${n.url}" target="_blank">📰 ${n.label}</a>`:`<span class="card-link" style="opacity:0.6;cursor:default">📰 ${n.label}</span>`).join('')+'</div>';}
     div.innerHTML=`<div class="card-top"><span class="card-year">${ds}</span><span class="card-purpose ${v.purpose}">${purposeLabel}</span></div><div class="card-name">${v.name}</div><div class="card-detail">${v.cn} · ${v.title}</div><div class="card-detail">📍 ${v.place}</div>${v.note?`<div class="card-detail" style="margin-top:2px;font-style:italic;font-size:10px">${v.note.length>50?v.note.slice(0,50)+'...':v.note}</div>`:''}${newsHTML}`;
     div.addEventListener('click',()=>{highlightVisit(origIdx);if(window.innerWidth<768)document.getElementById('sheet').classList.remove('open')});
     div._origIdx=origIdx;cardList.appendChild(div);
@@ -485,5 +485,9 @@ renderList();
 document.getElementById('loader').classList.add('hide');
 });
 </script>
+<footer style="text-align:center;padding:16px 12px;font-size:11px;color:#6b8299;border-top:1px solid rgba(255,255,255,0.06);margin-top:4px;line-height:1.8">
+  <div>数据来源：苏州市人民政府外事办公室、公开报道等。仅供研究参考。</div>
+  <div style="margin-top:2px">本项目仅供研究参考，不代表官方立场。</div>
+</footer>
 </body>
 </html>
