@@ -120,6 +120,17 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hira
 .css-bar-mixed{background:#ffb74d}
 .css-bar-business{background:#ef5350}
 .css-bar-label{font-size:9px;color:#6b8299;margin-top:3px}
+/* Place bars */
+.css-bar-garden{background:#81c784}
+.css-bar-factory{background:#ef5350}
+.css-bar-park{background:#4fc3f7}
+.css-bar-other{background:#ffb74d}
+#place-trend{display:flex;align-items:stretch;gap:10px;padding:10px 16px;border-bottom:1px solid #1a2632;min-height:100px}
+#place-trend .pt-chart{flex:1;display:flex;align-items:flex-end;gap:4px}
+#place-trend .pt-legend{display:flex;flex-direction:column;justify-content:center;gap:4px;min-width:70px}
+.pt-legend .ptl{display:flex;align-items:center;gap:4px;font-size:9px;color:#8899aa}
+.pt-legend .ptld{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.pt-section-title{font-size:10px;color:#6b8299;padding:8px 16px 4px;letter-spacing:1px}
 </style>
   <meta property="og:title" content="外国政要参访苏州·1971-2026">
   <meta property="og:description" content="1971年至2026年外国政要访苏足迹，从「逛园林」到「直奔工厂」的变迁图谱">
@@ -170,6 +181,16 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hira
       <div id="mini-trend">
         <canvas id="trendChart"></canvas>
         <div id="mini-insight"><div class="big" id="insight-pct">85%</div><div class="txt" id="insight-text">2020s产业参访占比</div></div>
+      </div>
+      <div class="pt-section-title">▎参访地点变迁</div>
+      <div id="place-trend">
+        <div class="pt-chart" id="pt-chart"></div>
+        <div class="pt-legend">
+          <div class="ptl"><span class="ptld" style="background:#81c784"></span>园林古迹</div>
+          <div class="ptl"><span class="ptld" style="background:#4fc3f7"></span>产业园区</div>
+          <div class="ptl"><span class="ptld" style="background:#ef5350"></span>工厂企业</div>
+          <div class="ptl"><span class="ptld" style="background:#ffb74d"></span>会议/高校</div>
+        </div>
       </div>
       <div class="stats-strip">
         <div class="stat-badge"><div class="num" id="s-total">-</div><div class="label">参访次数</div></div>
@@ -361,6 +382,45 @@ function buildTrendChart(filtered){
 }
 buildTrendChart(visits);
 
+// ========== PLACE TREND ==========
+function categorizePlace(placeStr){
+  const p = placeStr||'';
+  const gardens = ['拙政园','虎丘','留园','网师园','狮子林','沧浪亭','西园','天平山','苏州博物馆','刺绣','戏曲博物馆','丝绸','人民商场','得月楼','山塘街','平江路','周庄'];
+  const parks = ['工业园区','园区展示','纳米城','生物医药','生命科学园','绿色数码港','腾飞','研发社区','凤凰工业园'];
+  const factories = ['金龙客车','协鑫','固德威','亨通','蒙德拉贡','法格','海斯坦普','史太林格','中交天和','新宇航空','净水厂','同程'];
+  for(const k of gardens) if(p.includes(k)) return 'garden';
+  for(const k of factories) if(p.includes(k)) return 'factory';
+  for(const k of parks) if(p.includes(k)) return 'park';
+  return 'other';
+}
+
+function buildPlaceTrend(filtered){
+  const decades = {1970:{garden:0,park:0,factory:0,other:0},1980:{garden:0,park:0,factory:0,other:0},1990:{garden:0,park:0,factory:0,other:0},2000:{garden:0,park:0,factory:0,other:0},2010:{garden:0,park:0,factory:0,other:0},2020:{garden:0,park:0,factory:0,other:0}};
+  filtered.forEach(v=>{
+    const d=Math.floor(v.y/10)*10;
+    if(decades[d]) decades[d][categorizePlace(v.place)]++;
+  });
+  const labels=['1970s','1980s','1990s','2000s','2010s','2020s'];
+  const colors={garden:'#81c784',park:'#4fc3f7',factory:'#ef5350',other:'#ffb74d'};
+  const maxVal=Math.max(...labels.map(l=>{
+    const d=decades[parseInt(l)];return d.garden+d.park+d.factory+d.other;
+  }),1);
+  const container=document.getElementById('pt-chart');
+  container.innerHTML=labels.map((l,i)=>{
+    const d=decades[parseInt(l)], order=['other','factory','park','garden'];
+    let segs='';
+    order.forEach(cat=>{
+      const h=(d[cat]/maxVal*100).toFixed(1);
+      if(parseFloat(h)>0) segs+=`<div style="height:${h}%;background:${colors[cat]};border-radius:1px;min-height:2px"></div>`;
+    });
+    return `<div class="css-bar-group" style="flex:1">
+      <div class="css-bar-wrap" style="display:flex;flex-direction:column;justify-content:flex-end;height:60px;background:transparent">${segs}</div>
+      <span class="css-bar-label">${l}</span>
+    </div>`;
+  }).join('');
+}
+buildPlaceTrend(visits);
+
 // ========== CARD LIST ==========
 const cardList = document.getElementById('card-list');
 let currentFilter='all',currentMode='all';
@@ -385,7 +445,7 @@ function renderList(){
   document.getElementById('s-total').textContent=filtered.length;
   document.getElementById('s-countries').textContent=new Set(filtered.map(v=>v.cn)).size;
   document.getElementById('s-years').textContent=new Set(filtered.map(v=>v.y)).size;
-  buildTrendChart(filtered);updateHeatmap(filtered);
+  buildTrendChart(filtered);buildPlaceTrend(filtered);updateHeatmap(filtered);
 }
 
 function highlightVisit(idx){
