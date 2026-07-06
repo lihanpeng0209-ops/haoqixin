@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>外国政要参访苏州 · 1971—2026</title>
+<link rel="dns-prefetch" href="//cdn.bootcdn.net">
+<link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.css" />
 <script src="https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
@@ -99,14 +101,29 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hira
 #map-wrap{flex:1}
 .narrative-toast{max-width:340px}
 }
+/* Loading */
+#loader{position:fixed;top:0;left:0;width:100%;height:100%;background:#080c12;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.3s}
+#loader.hide{opacity:0;pointer-events:none}
+#loader .spinner{width:40px;height:40px;border:3px solid #1c2a3a;border-top-color:#4fc3f7;border-radius:50%;animation:spin 0.8s linear infinite}
+#loader p{color:#6b8299;font-size:12px;margin-top:16px;letter-spacing:1px}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* CSS bars */
+.css-bar-group{flex:1;display:flex;flex-direction:column;align-items:center;min-width:0}
+.css-bar-wrap{width:100%;height:60px;position:relative;display:flex;align-items:flex-end}
+.css-bar{position:absolute;bottom:0;width:60%;left:20%;border-radius:2px 2px 0 0}
+.css-bar-cultural{background:#81c784}
+.css-bar-mixed{background:#ffb74d}
+.css-bar-business{background:#ef5350}
+.css-bar-label{font-size:9px;color:#6b8299;margin-top:3px}
 </style>
   <meta property="og:title" content="外国政要参访苏州·1971-2026">
-  <meta property="og:description" content="56年间81批次外国政要访苏足迹，从「逛园林」到「直奔工厂」的变迁图谱">
+  <meta property="og:description" content="1971年至2026年外国政要访苏足迹，从「逛园林」到「直奔工厂」的变迁图谱">
   <meta property="og:image" content="">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
+<div id="loader"><div class="spinner"></div><p>加载中...</p></div>
 <div id="app">
   <!-- Mobile topbar -->
   <div id="topbar">
@@ -183,7 +200,7 @@ const visits = [
   {y:1992,m:9,d:null,name:"王鼎昌",cn:"新加坡",title:"副总理(后任总统)",role:"head",purpose:"business",place:"虎丘",lat:31.340,lng:120.586,note:"与李光耀同访苏州考察工业园区选址。",news:[],photo:null},
   {y:1993,m:5,d:10,name:"李光耀",cn:"新加坡",title:"内阁资政",role:"head",purpose:"business",place:"竹辉饭店、网师园",lat:31.297,lng:120.637,note:"率团考察，夜游网师园。5月11日签署《合作开发苏州工业园区的原则协议》。",news:[{label:"红网·李光耀园区故事",url:"https://yq.rednet.cn/c/2015/03/24/4120777.htm"}],photo:null},
   {y:1993,m:5,d:10,name:"王鼎昌",cn:"新加坡",title:"副总理",role:"head",purpose:"business",place:"竹辉饭店",lat:31.297,lng:120.637,note:"共同出席苏州工业园区原则协议签约。",news:[],photo:null},
-  {y:1993,m:11,d:null,name:"黎德英",cn:"越南",title:"国家主席",role:"head",purpose:"cultural",place:"苏州",lat:31.300,lng:120.634,note:"时任越南国家主席到访苏州。",news:[],photo:null},
+
   {y:1994,m:5,d:null,name:"李显龙",cn:"新加坡",title:"副总理",role:"head",purpose:"business",place:"苏州工业园区",lat:31.324,lng:120.733,note:"园区破土动工。与中国副总理李岚清共同担任园区首任联合协调理事会联合主席。",news:[{label:"网易·李显龙苏州渊源",url:"https://www.163.com/dy/article/JI1BBVBD051482MP_pdya11y.html"}],photo:null},
   {y:1994,m:5,d:14,name:"亨利·基辛格",cn:"美国",title:"前国务卿",role:"minister",purpose:"cultural",place:"留园(冠云峰)、网师园",lat:31.317,lng:120.593,note:"第三次访苏。在冠云峰前留影：'让美丽的苏州永远留在我的心中'。",news:[{label:"江苏网·基辛格苏州情缘",url:"https://jsnews.jschina.com.cn/sz/a/202312/t20231201_3326587.shtml"}],photo:null},
   {y:1995,m:10,d:7,name:"李显龙",cn:"新加坡",title:"副总理",role:"head",purpose:"business",place:"苏州工业园区净水厂",lat:31.324,lng:120.733,note:"与中国副总理李岚清共同主持净水厂奠基仪式。",news:[],photo:null},
@@ -210,7 +227,7 @@ const visits = [
   {y:2023,m:12,d:12,name:"埃里克·阿洛泽",cn:"法国",title:"国民议会法中友好小组主席",role:"minister",purpose:"mixed",place:"苏州博物馆、拙政园",lat:31.325,lng:120.631,note:"率法国议会代表团。参加第三届中法碳中和论坛、赛诺菲研究院活动。",news:[{label:"苏州市政府·法国议会代表团访苏",url:"https://www.suzhou.gov.cn/szsrmzf/bmdt/202312/44c6db47ec9147ca86af8b679f9b3e1a.shtml"}],photo:null},
   {y:2024,m:9,d:11,name:"佩德罗·桑切斯",cn:"西班牙",title:"首相",role:"head",purpose:"business",place:"昆山(蒙德拉贡工业园)",lat:31.385,lng:120.981,note:"直奔昆山工厂车间！走进法格锻压机床、海斯坦普汽车组件生产车间。",news:[{label:"苏州日报·桑切斯访苏",url:"https://www.suzhou.gov.cn/szsrmzf/szyw/202409/5c96a91cac5d4054af0f81bb284b5479.shtml"},{label:"今日头条·桑切斯到访苏州",url:"https://www.toutiao.com/article/7413455643006272000/"}],photo:null},
   {y:2024,m:11,d:23,name:"李显龙",cn:"新加坡",title:"国务资政",role:"head",purpose:"business",place:"中新生命科学园、右岸客厅、广电总台、中新绿色数码港",lat:31.324,lng:120.733,note:"出席园区开发建设30周年活动。卸任总理后首次访华，与何立峰共同参观成果展、种植友谊树。",news:[{label:"央视·李显龙访华",url:"https://content-static.cctvnews.cctv.com/snow-book/index.html?item_id=8269614627764167585"},{label:"上观·李显龙苏州第一站",url:"https://www.163.com/dy/article/JHTOD1R9055040N3.html"}],photo:null},
-  {y:2026,m:2,d:25,name:"弗里德里希·默茨",cn:"德国",title:"总理",role:"head",purpose:"business",place:"太仓(德资企业)",lat:31.459,lng:121.130,note:"率高规格经贸代表团访华，近30家德企高管随行。太仓集聚近800家德企。",news:[{label:"苏州日报·范波会见德企代表",url:"https://www.suzhou.gov.cn/szsrmzf/szyw/202602/43b5166fbcf94a018e9413e11120489c.shtml"},{label:"江苏宣传·中德经贸下一程",url:"https://www.jsxc.gov.cn/jsfb/dwxc/202602/t20260228_90741.shtml"}],photo:null},
+
   {y:2026,m:4,d:19,name:"马里奥·库纳塞克",cn:"奥地利",title:"施蒂利亚州州长",role:"minister",purpose:"business",place:"太仓",lat:31.459,lng:121.130,note:"太仓高新区与施蒂利亚州国际化中心签署经贸合作协议。",news:[{label:"苏州市政府·太仓奥地利交流会",url:"https://www.suzhou.gov.cn/szsrmzf/szyw/202604/5a4e534b87904bf9931580261244dbc9.shtml"}],photo:null},
   {y:2026,m:5,d:21,name:"赤泽亮正",cn:"日本",title:"经济产业大臣",role:"minister",purpose:"business",place:"金鸡湖(APEC会场)",lat:31.318,lng:120.722,note:"出席APEC第三十二届贸易部长会议。G7成员国中第6个派出高官访华。",news:[{label:"今日头条·赤泽亮正访华",url:"https://www.toutiao.com/article/7642907682747253275"}],photo:null},
   {y:2026,m:6,d:23,name:"贝娅特·迈因尔-赖辛格",cn:"奥地利",title:"外交部长",role:"minister",purpose:"business",place:"太仓(史太林格公司)",lat:31.459,lng:121.130,note:"紧凑行程中专程留2小时到访太仓。参观专精特新'小巨人'企业。",news:[{label:"江苏一带一路·奥地利外长访太仓",url:"https://ydyl.jiangsu.gov.cn/art/2026/6/26/art_76290_11795083.html"}],photo:null},
@@ -396,33 +413,7 @@ document.getElementById('sheet-toggle').addEventListener('click',function(){
 
 // Init
 renderList();
+document.getElementById('loader').classList.add('hide');
 </script>
 </body>
-</html>function buildTrendChart(){
-  const eras=['1970s','1980s','1990s','2000s','2010s','2020s'];
-  const vals=eras.map(e=>{
-    const [s,e2]=[parseInt(e),parseInt(e)+9];
-    const subset=visits.filter(v=>v.y>=s&&v.y<=e2);
-    return {
-      era:e,
-      total:subset.length,
-      cultural:subset.filter(v=>v.purpose==='cultural').length,
-      mixed:subset.filter(v=>v.purpose==='mixed').length,
-      business:subset.filter(v=>v.purpose==='business').length
-    };
-  });
-  const maxVal=Math.max(...vals.map(v=>v.total),1);
-  const container=document.getElementById('trendChart');
-  container.innerHTML=vals.map(v=>`
-    <div class="css-bar-group">
-      <div class="css-bar-wrap">
-        <div class="css-bar css-bar-cultural" style="height:${(v.cultural/maxVal*100).toFixed(1)}%"></div>
-        <div class="css-bar css-bar-mixed" style="height:${(v.mixed/maxVal*100).toFixed(1)}%"></div>
-        <div class="css-bar css-bar-business" style="height:${(v.business/maxVal*100).toFixed(1)}%"></div>
-      </div>
-      <span class="css-bar-label">${v.era}</span>
-    </div>
-  `).join('');
-  const total=vals.reduce((a,b)=>a+b.total,0);
-  document.getElementById('trendYear').textContent=total;
-}
+</html>
