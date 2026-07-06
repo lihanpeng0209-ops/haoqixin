@@ -411,10 +411,10 @@ function buildPlaceTrend(filtered){
     let segs='';
     order.forEach(cat=>{
       const h=(d[cat]/maxVal*100).toFixed(1);
-      if(parseFloat(h)>0) segs+=`<div style="height:${h}%;background:${colors[cat]};border-radius:1px;min-height:2px"></div>`;
+      if(parseFloat(h)>0) segs+=`<div style="height:${h}%;width:100%;background:${colors[cat]};border-radius:1px;min-height:2px"></div>`;
     });
     return `<div class="css-bar-group" style="flex:1">
-      <div class="css-bar-wrap" style="display:flex;flex-direction:column;justify-content:flex-end;height:60px;background:transparent">${segs}</div>
+      <div class="css-bar-wrap" style="display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;height:60px;background:transparent">${segs}</div>
       <span class="css-bar-label">${l}</span>
     </div>`;
   }).join('');
