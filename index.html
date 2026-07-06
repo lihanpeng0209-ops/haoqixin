@@ -31,6 +31,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"PingFang SC","Hira
 .leaflet-container{background:#080c12!important}
 #map-wrap{flex:1;position:relative;min-height:0;background:#080c12}
 #map{width:100%;height:100%}
+.leaflet-control-attribution{background:rgba(14,20,28,0.75)!important;backdrop-filter:blur(4px);padding:2px 8px;margin:0 0 36px 4px;border-radius:6px;font-size:9px}
+.leaflet-control-attribution a{color:#6b8299!important}
 /* Floating controls */
 .map-float{position:absolute;top:10px;right:10px;z-index:999;display:flex;flex-direction:column;gap:5px}
 .map-float button{padding:8px 12px;border-radius:8px;border:1px solid #1c2a3a;background:rgba(14,20,28,0.94);color:#8899aa;font-size:11px;cursor:pointer;backdrop-filter:blur(8px);text-align:center;white-space:nowrap}
@@ -298,6 +300,7 @@ visits.sort((a,b)=>a.y-b.y||(a.m||0)-(b.m||0));
 // ========== MAP ==========
 const map = L.map('map',{zoomControl:false}).setView([31.32, 120.68], 10);
 L.control.zoom({position:'bottomright'}).addTo(map);
+L.control.attribution({position:'bottomleft',prefix:''}).addAttribution('&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>').addTo(map);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(map);
 
 const roleColors = {head:'#4fc3f7',royal:'#81c784',minister:'#ffb74d'};
